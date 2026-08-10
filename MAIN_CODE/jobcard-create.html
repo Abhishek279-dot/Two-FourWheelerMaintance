@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Card — AutoLine DMS</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app-shell">
+  <div class="sidebar" id="sidebar"></div>
+  <div class="overlay-bg" id="overlayBg"></div>
+  <div class="main">
+    <div class="topbar" id="topbar"></div>
+    <div class="content">
+
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:6px;">
+        <div class="stepper" id="stepperBar"></div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-outline btn-sm" id="printBtn">🖨️ Print</button>
+          <button class="btn btn-outline btn-sm" id="completeBtn">Complete Job</button>
+          <button class="btn btn-outline btn-sm" id="reopenBtn">Reopen</button>
+          <button class="btn btn-outline btn-sm" id="cancelBtn">Cancel</button>
+          <button class="btn btn-primary btn-sm" id="updateBtn">Update</button>
+        </div>
+      </div>
+
+      <!-- STEP 1: JOB -->
+      <div class="step-panel" id="panel-job">
+        <div class="panel">
+          <div class="panel-head"><h3>Job Details</h3></div>
+          <div class="form-grid">
+            <div class="field"><label>Job Card No</label><input id="jJobId" disabled></div>
+            <div class="field"><label>Job Card Date</label><input type="date" id="jDate"></div>
+            <div class="field"><label>Frame No</label><input id="jFrame"></div>
+            <div class="field"><label>Registration No</label><input id="jReg"></div>
+            <div class="field"><label>Customer Name</label><input id="jCustomer"></div>
+            <div class="field"><label>Mobile Number</label><input id="jMobile" placeholder="+91"></div>
+            <div class="field"><label>Model</label>
+              <select id="jModel">
+                <option>TVS Jupiter 110 OBD2E</option>
+                <option>JUPITER</option>
+                <option>TVS Jupiter110 DR</option>
+                <option>JUPITER ZX DISC SXC</option>
+                <option>TVS RONIN 1CH BASE</option>
+                <option>NTORQ 125</option>
+              </select>
+            </div>
+            <div class="field"><label>Job Type</label>
+              <select id="jType">
+                <option>1st Free Service</option>
+                <option>2nd Free Service</option>
+                <option>3rd Free Service</option>
+                <option>Paid Service</option>
+                <option>Running Repair</option>
+              </select>
+            </div>
+            <div class="field"><label>KMS Run</label><input id="jKms" type="number" placeholder="e.g. 4200"></div>
+            <div class="field"><label>Service Mode</label>
+              <select id="jServiceMode"><option>Walk-in</option><option>Pick-up</option><option>Doorstep</option></select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: COMPLAINTS -->
+      <div class="step-panel" id="panel-complaints" style="display:none;">
+        <div class="panel">
+          <div class="panel-head"><div><h3>Customer Complaints</h3><div class="sub">Add each reported issue as a line item</div></div></div>
+          <div id="complaintRows"></div>
+          <button class="btn btn-outline btn-sm" id="addComplaintBtn">+ Add Complaint</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: ALLOCATION -->
+      <div class="step-panel" id="panel-allocation" style="display:none;">
+        <div class="panel">
+          <div class="tabs">
+            <div class="tab-btn active" data-tab="mechanic">Mechanic</div>
+            <div class="tab-btn" data-tab="labour">Labour</div>
+            <div class="tab-btn" data-tab="parts">Parts</div>
+          </div>
+
+          <div class="tab-content active" id="tab-mechanic">
+            <div class="panel-head"><h3>Mechanic Allocation</h3></div>
+            <div class="form-grid">
+              <div class="field"><label>Bay</label>
+                <select id="mBay"><option value="">Select Bay</option><option>Bay 1</option><option>Bay 2</option><option>Bay 3</option></select>
+              </div>
+              <div class="field"><label>Mechanic Name</label>
+                <select id="mMechanic"><option>Vilas Hire</option><option>Sonu Chavan</option><option>Sidharam Jirole</option><option>Ganesh Pawar</option></select>
+              </div>
+              <div class="field"><label>Supervisor</label>
+                <select id="mSupervisor"><option>Sidharam Jirole</option><option>Vilas Hire</option></select>
+              </div>
+              <div class="field"><label>Water Wash</label>
+                <select id="mWaterWash"><option>Sonu Chavan</option><option>Ganesh Pawar</option><option>None</option></select>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tab-labour">
+            <div class="panel-head" style="display:flex; justify-content:space-between; align-items:center;">
+              <h3>Labour Charges</h3>
+              <button class="btn btn-outline btn-sm" id="addLabourBtn">+ Add Labour</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Labour Code</th><th>Description</th><th>Category</th><th>Qty</th><th>Rate</th><th>Charge</th><th></th></tr></thead>
+                <tbody id="labourBody"></tbody>
+              </table>
+            </div>
+            <div style="display:flex; gap:20px; margin-top:14px; flex-wrap:wrap;">
+              <div class="field" style="max-width:180px;"><label>Total Issued Labour</label><input id="labourCount" disabled></div>
+              <div class="field" style="max-width:180px;"><label>Labour Total Value</label><input id="labourTotalVal" disabled></div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tab-parts">
+            <div class="panel-head" style="display:flex; justify-content:space-between; align-items:center;">
+              <h3>Parts Allocation</h3>
+              <button class="btn btn-outline btn-sm" id="addPartBtn">+ Add Parts</button>
+            </div>
+            <div class="info-banner" style="margin-bottom:12px;">ℹ️ Please do not charge the customer more than the MRP mentioned on the label.</div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Part No</th><th>Description</th><th>Issue Mode</th><th>Qty</th><th>Unit Price</th><th>MRP</th><th>Total</th><th></th></tr></thead>
+                <tbody id="partsBody"></tbody>
+              </table>
+            </div>
+            <div style="display:flex; gap:20px; margin-top:14px; flex-wrap:wrap;">
+              <div class="field" style="max-width:180px;"><label>No of Parts</label><input id="partsCount" disabled></div>
+              <div class="field" style="max-width:180px;"><label>Parts Total</label><input id="partsTotalVal" disabled></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: INVOICE -->
+      <div class="step-panel" id="panel-invoice" style="display:none;">
+        <div class="panel">
+          <div class="panel-head"><h3>Invoice Summary</h3></div>
+          <div class="table-wrap" style="border:none; max-width:520px;">
+            <table>
+              <tbody>
+                <tr><td>Labour Total</td><td id="invLabour">₹0</td></tr>
+                <tr><td>Parts Total</td><td id="invParts">₹0</td></tr>
+                <tr><td>GST (18%)</td><td id="invGst">₹0</td></tr>
+                <tr style="font-weight:800;"><td>Grand Total</td><td id="invGrand">₹0</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <button class="btn btn-success" style="margin-top:14px;" id="generateInvoiceBtn">Generate Invoice</button>
+        </div>
+      </div>
+
+      <!-- STEP 5: VOUCHER -->
+      <div class="step-panel" id="panel-voucher" style="display:none;">
+        <div class="panel">
+          <div class="panel-head"><h3>Payment Voucher</h3></div>
+          <div class="form-grid">
+            <div class="field"><label>Payment Mode</label>
+              <select id="vMode"><option>Cash</option><option>UPI</option><option>Card</option><option>Credit (Corporate)</option></select>
+            </div>
+            <div class="field"><label>Amount Received</label><input id="vAmount" type="number" placeholder="0"></div>
+            <div class="field"><label>Reference / UTR No</label><input id="vRef" placeholder="Optional"></div>
+            <div class="field"><label>Received By</label><input id="vBy" value="admin"></div>
+          </div>
+          <button class="btn btn-primary" style="margin-top:14px;" id="saveVoucherBtn">Save Voucher</button>
+        </div>
+      </div>
+
+      <!-- STEP 6: STANDARD CHECKS -->
+      <div class="step-panel" id="panel-checks" style="display:none;">
+        <div class="panel">
+          <div class="panel-head"><h3>Standard Pre-Delivery Checks</h3></div>
+          <div id="checksList" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
+          <button class="btn btn-success" style="margin-top:14px;" id="finishChecksBtn">Mark Vehicle Ready for Delivery</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+requireLogin();
+buildShell("jobcard-create.html", "Service / Job Card", "Create or update a job card");
+
+const params = new URLSearchParams(window.location.search);
+const editId = params.get("id");
+let current = null;
+
+const data = DMS.get();
+if (editId) {
+  current = data.jobCards.find(j => j.id === editId);
+}
+if (!current) {
+  current = { id: "JC-" + (3000 + Math.floor(Math.random()*900)), frameNo:"", regNo:"", customer:"", model:"TVS Jupiter 110 OBD2E", jobType:"1st Free Service", status:"Job Created", date: new Date().toISOString().slice(0,10), mechanic:"", labourTotal:0, partsTotal:0 };
+}
+
+// local editable state (not persisted until Update pressed)
+let labourRows = [{ code:"LC005", desc:"LABOUR CHARGE", cat:"Benchwork", qty:1, rate:100, charge:100 }];
+let partsRows = [{ part:"TR600390", desc:"TVS TRU4 SKUUTA 10W30 ENGINE OIL 900ML", issue:"Normal", qty:1, unit:572.03, mrp:675 }];
+let complaints = [{ text: "Engine noise on cold start" }, { text: "Front brake feels loose" }];
+let checks = ["Horn working","Headlight & indicators","Brake fluid level","Tyre pressure","Mirror alignment","Engine oil level","Chain/Belt tension","Wheel alignment"];
+
+const STEPS = [
+  { key:"job", label:"Job" },
+  { key:"complaints", label:"Complaints" },
+  { key:"allocation", label:"Allocation" },
+  { key:"invoice", label:"Invoice" },
+  { key:"voucher", label:"Voucher" },
+  { key:"checks", label:"Standard Checks" }
+];
+let stepIndex = 0;
+
+function renderStepper() {
+  const bar = document.getElementById("stepperBar");
+  bar.innerHTML = STEPS.map((s,i) => {
+    const cls = i < stepIndex ? "done" : (i === stepIndex ? "active" : "");
+    const line = i < STEPS.length-1 ? `<div class="step-line ${i < stepIndex ? 'done':''}"></div>` : "";
+    return `<div class="step ${cls}" data-i="${i}"><div class="dot">${i < stepIndex ? '✓' : i+1}</div><div class="label">${s.label}</div></div>${line}`;
+  }).join("");
+  document.querySelectorAll(".step").forEach(el => el.addEventListener("click", () => goToStep(parseInt(el.dataset.i))));
+}
+
+function goToStep(i) {
+  stepIndex = i;
+  renderStepper();
+  document.querySelectorAll(".step-panel").forEach(p => p.style.display = "none");
+  document.getElementById("panel-" + STEPS[i].key).style.display = "block";
+  if (STEPS[i].key === "invoice") refreshInvoice();
+}
+
+renderStepper();
+goToStep(0);
+
+// ---- fill job fields ----
+document.getElementById("jJobId").value = current.id;
+document.getElementById("jDate").value = current.date;
+document.getElementById("jFrame").value = current.frameNo;
+document.getElementById("jReg").value = current.regNo;
+document.getElementById("jCustomer").value = current.customer;
+document.getElementById("jModel").value = current.model;
+document.getElementById("jType").value = current.jobType;
+
+// ---- complaints ----
+function renderComplaints() {
+  document.getElementById("complaintRows").innerHTML = complaints.map((c,i) => `
+    <div class="field full" style="display:flex; gap:8px; margin-bottom:8px;">
+      <input value="${c.text}" data-i="${i}" class="complaintInput" style="flex:1;">
+      <button class="btn btn-outline btn-sm removeComplaint" data-i="${i}">✕</button>
+    </div>`).join("");
+  document.querySelectorAll(".complaintInput").forEach(el => el.addEventListener("input", (e) => complaints[e.target.dataset.i].text = e.target.value));
+  document.querySelectorAll(".removeComplaint").forEach(el => el.addEventListener("click", (e) => { complaints.splice(e.target.dataset.i,1); renderComplaints(); }));
+}
+document.getElementById("addComplaintBtn").addEventListener("click", () => { complaints.push({text:""}); renderComplaints(); });
+renderComplaints();
+
+// ---- tabs ----
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+  });
+});
+
+// ---- labour ----
+function renderLabour() {
+  document.getElementById("labourBody").innerHTML = labourRows.map((r,i) => `
+    <tr>
+      <td><input value="${r.code}" data-i="${i}" data-f="code" class="lInput" style="width:90px;"></td>
+      <td><input value="${r.desc}" data-i="${i}" data-f="desc" class="lInput" style="width:160px;"></td>
+      <td><input value="${r.cat}" data-i="${i}" data-f="cat" class="lInput" style="width:110px;"></td>
+      <td><input type="number" value="${r.qty}" data-i="${i}" data-f="qty" class="lInput" style="width:60px;"></td>
+      <td><input type="number" value="${r.rate}" data-i="${i}" data-f="rate" class="lInput" style="width:80px;"></td>
+      <td>₹${r.charge.toFixed(2)}</td>
+      <td><button class="btn btn-outline btn-sm removeLabour" data-i="${i}">🗑</button></td>
+    </tr>`).join("");
+  document.querySelectorAll(".lInput").forEach(el => el.addEventListener("input", (e) => {
+    const i = e.target.dataset.i, f = e.target.dataset.f;
+    labourRows[i][f] = (f === "qty" || f === "rate") ? parseFloat(e.target.value || 0) : e.target.value;
+    labourRows[i].charge = labourRows[i].qty * labourRows[i].rate;
+    updateLabourTotals();
+  }));
+  document.querySelectorAll(".removeLabour").forEach(el => el.addEventListener("click", (e) => { labourRows.splice(e.target.dataset.i,1); renderLabour(); updateLabourTotals(); }));
+  updateLabourTotals();
+}
+function updateLabourTotals() {
+  document.getElementById("labourCount").value = labourRows.length;
+  const total = labourRows.reduce((s,r)=>s+r.charge,0);
+  document.getElementById("labourTotalVal").value = "₹" + total.toFixed(2);
+  document.querySelectorAll(".labourBodyCharges").forEach(td => {});
+}
+document.getElementById("addLabourBtn").addEventListener("click", () => { labourRows.push({code:"",desc:"",cat:"",qty:1,rate:0,charge:0}); renderLabour(); });
+renderLabour();
+
+// ---- parts ----
+function renderParts() {
+  document.getElementById("partsBody").innerHTML = partsRows.map((r,i) => `
+    <tr>
+      <td><input value="${r.part}" data-i="${i}" data-f="part" class="pInput" style="width:100px;"></td>
+      <td><input value="${r.desc}" data-i="${i}" data-f="desc" class="pInput" style="width:200px;"></td>
+      <td>
+        <select data-i="${i}" data-f="issue" class="pInput">
+          <option ${r.issue==='Normal'?'selected':''}>Normal</option>
+          <option ${r.issue==='Warranty'?'selected':''}>Warranty</option>
+          <option ${r.issue==='Free'?'selected':''}>Free</option>
+        </select>
+      </td>
+      <td><input type="number" value="${r.qty}" data-i="${i}" data-f="qty" class="pInput" style="width:60px;"></td>
+      <td><input type="number" value="${r.unit}" data-i="${i}" data-f="unit" class="pInput" style="width:80px;"></td>
+      <td>₹${r.mrp}</td>
+      <td>₹${(r.qty*r.unit).toFixed(2)}</td>
+      <td><button class="btn btn-outline btn-sm removePart" data-i="${i}">🗑</button></td>
+    </tr>`).join("");
+  document.querySelectorAll(".pInput").forEach(el => el.addEventListener("input", (e) => {
+    const i = e.target.dataset.i, f = e.target.dataset.f;
+    partsRows[i][f] = (f === "qty" || f === "unit") ? parseFloat(e.target.value || 0) : e.target.value;
+    renderParts();
+  }));
+  document.querySelectorAll("select.pInput").forEach(el => el.addEventListener("change", (e) => { partsRows[e.target.dataset.i][e.target.dataset.f] = e.target.value; }));
+  document.querySelectorAll(".removePart").forEach(el => el.addEventListener("click", (e) => { partsRows.splice(e.target.dataset.i,1); renderParts(); }));
+  updatePartsTotals();
+}
+function updatePartsTotals() {
+  document.getElementById("partsCount").value = partsRows.length;
+  const total = partsRows.reduce((s,r)=>s+(r.qty*r.unit),0);
+  document.getElementById("partsTotalVal").value = "₹" + total.toFixed(2);
+}
+document.getElementById("addPartBtn").addEventListener("click", () => { partsRows.push({part:"",desc:"",issue:"Normal",qty:1,unit:0,mrp:0}); renderParts(); });
+renderParts();
+
+// ---- invoice ----
+function refreshInvoice() {
+  const labourTotal = labourRows.reduce((s,r)=>s+r.charge,0);
+  const partsTotal = partsRows.reduce((s,r)=>s+(r.qty*r.unit),0);
+  const gst = (labourTotal+partsTotal) * 0.18;
+  document.getElementById("invLabour").textContent = "₹" + labourTotal.toFixed(2);
+  document.getElementById("invParts").textContent = "₹" + partsTotal.toFixed(2);
+  document.getElementById("invGst").textContent = "₹" + gst.toFixed(2);
+  document.getElementById("invGrand").textContent = "₹" + (labourTotal+partsTotal+gst).toFixed(2);
+}
+document.getElementById("generateInvoiceBtn").addEventListener("click", () => showToast("Invoice generated ✓ (demo)", "success"));
+
+// ---- voucher ----
+document.getElementById("saveVoucherBtn").addEventListener("click", () => {
+  if (!document.getElementById("vAmount").value) { showToast("Enter amount received", "danger"); return; }
+  showToast("Voucher saved ✓", "success");
+});
+
+// ---- standard checks ----
+document.getElementById("checksList").innerHTML = checks.map((c,i) => `
+  <label style="display:flex; align-items:center; gap:8px; font-size:13px; padding:8px 10px; border:1px solid var(--border); border-radius:8px;">
+    <input type="checkbox"> ${c}
+  </label>`).join("");
+document.getElementById("finishChecksBtn").addEventListener("click", () => showToast("Vehicle marked ready for delivery ✓", "success"));
+
+// ---- top action buttons ----
+document.getElementById("printBtn").addEventListener("click", () => window.print());
+document.getElementById("completeBtn").addEventListener("click", () => {
+  DMS.update(d => { const j = d.jobCards.find(x=>x.id===current.id); if(j){ j.status = "Job Completed"; } });
+  showToast("Job marked completed ✓", "success");
+});
+document.getElementById("reopenBtn").addEventListener("click", () => {
+  DMS.update(d => { const j = d.jobCards.find(x=>x.id===current.id); if(j){ j.status = "Allocated"; } });
+  showToast("Job card reopened", "success");
+});
+document.getElementById("cancelBtn").addEventListener("click", () => { window.location.href = "jobcard-list.html"; });
+document.getElementById("updateBtn").addEventListener("click", () => {
+  const labourTotal = labourRows.reduce((s,r)=>s+r.charge,0);
+  const partsTotal = partsRows.reduce((s,r)=>s+(r.qty*r.unit),0);
+  DMS.update(d => {
+    let j = d.jobCards.find(x=>x.id===current.id);
+    const payload = {
+      id: current.id,
+      frameNo: document.getElementById("jFrame").value,
+      regNo: document.getElementById("jReg").value,
+      customer: document.getElementById("jCustomer").value || "Walk-in Customer",
+      model: document.getElementById("jModel").value,
+      jobType: document.getElementById("jType").value,
+      status: j ? j.status : "Allocated",
+      date: document.getElementById("jDate").value || current.date,
+      mechanic: document.getElementById("mMechanic").value,
+      labourTotal, partsTotal
+    };
+    if (j) Object.assign(j, payload);
+    else d.jobCards.unshift(payload);
+  });
+  showToast("Job card updated ✓", "success");
+});
+</script>
+</body>
+</html>
