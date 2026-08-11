@@ -12,6 +12,7 @@
   --radius: 10px;
   --shadow: 0 2px 10px rgba(18,33,63,0.06);
   --sidebar-w: 230px;
+  --black: black;
 }
 
 img {
@@ -485,7 +486,7 @@ body {
   font-size: 12.3px;
   font-weight: 600;
   margin-bottom: 6px;
-  color: var(--muted);
+  color: var(--blck);
 }
 
 .field input, .field select, .field textarea {
@@ -743,6 +744,7 @@ tbody tr:last-child td {
   line-height: 1.25;
   margin: 14px 0 10px;
   max-width: 280px;
+  color:red;
 }
 
 .login-visual p {
