@@ -131,8 +131,6 @@
                             </select>
 
                         </div>
-
-
                         <!-- User ID -->
 
                         <div class="field full">
@@ -141,16 +139,9 @@
                                 User ID
                             </label>
 
-                            <input
-                                type="text"
-                                id="userId"
-                                autocomplete="new-username"
-                                required
-                            >
+                            <input type="text" id="userId" required>
 
                         </div>
-
-
                         <!-- Password -->
 
                         <div class="field full">
@@ -159,66 +150,28 @@
                                 Password
                             </label>
 
-                            <input
-                                type="password"
-                                id="password"
-                                placeholder="Enter password"
-                                autocomplete="new-password"
-                                required
-                            >
+                            <input type="password" id="password" placeholder="Enter password" autocomplete="new-password" required>
 
                         </div>
-
-
                         <!-- Login Button -->
 
                         <div class="field full">
 
-                            <button type="submit" class="btn btn-primary" id="sendOtpBtn" onlick="function">
+                            <button type="submit" class="btn btn-primary" id="sendOtpBtn">
                                 Click To Login
                             </button>
-
                         </div>
-
                     </div>
-
                 </form>
-                <p id="errorMsg" style="color:red; display:none;"></p>
-
+                <p id="errorMsg"></p>
             </div>
-
         </div>
-
     </div>
     
 
     <!-- JavaScript -->
 
-    <script>
-
-document.getElementById("loginForm").addEventListener("submit", function(e) {
-  e.preventDefault(); // page reload rokne ke liye
-  
-  const userId = document.getElementById("userId").value.trim();
-  const password = document.getElementById("password").value.trim();
-  const errorMsg = document.getElementById("errorMsg");
-
-  // Abhi ke liye dummy check (baad me backend API se replace hoga)
-  if (userId === "admin" && password === "admin123") {
-    localStorage.setItem("userRole", "admin"); // role save kar rahe hai
-    window.location.href = "HomePage.html";   // redirect
-  }else if(userId === "manager" && password === "manager123"){
-    localStorage.setItem("userRole", "manager"); // role save kar rahe hai
-    window.location.href = "HomePage.html";   // redirect
-  
-  } else {
-    errorMsg.textContent = "Invalid User ID or Password";
-    errorMsg.style.display = "block";
-  }
-});
-
-
-    </script>
+    <script src="LoginPage.js"></script>
 
 </body>
 

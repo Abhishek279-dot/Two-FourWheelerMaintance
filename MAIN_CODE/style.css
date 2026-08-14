@@ -15,10 +15,17 @@
   --black: black;
 }
 
+
+
 img {
   max-width: 100%;
   height: auto;
   display: block;
+}
+
+#errorMsg{
+  color:red; 
+  display:none;
 }
 
 .background-container {
