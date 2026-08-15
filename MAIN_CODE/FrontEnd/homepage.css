@@ -110,9 +110,16 @@
 }
 
 #userRoleDisplay{
-    color: white;
+    color: rgb(181, 212, 0);
     font-weight: bold; 
-    margin-right: 10px;
+    margin-right: 58px;
+    text-align:right;
+    padding-top:10px;
+}
+
+#userBranch{
+    color: rgb(1, 187, 72);
+    margin-right: 58px;
     text-align:right;
 }
 
@@ -137,6 +144,15 @@
     background-size: cover;    /* poora area cover karega, thoda crop ho sakta hai */
     background-position: center;
     background-repeat: no-repeat;
+}
+
+
+
+
+.profile-circle{
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 
 
