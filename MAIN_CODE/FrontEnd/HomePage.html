@@ -74,6 +74,43 @@
         </div>
     </div>
 
+
+    <!-- Banner Image Swiper -->
+<div class="swiper banner-image-swiper">
+
+    <div class="swiper-wrapper">
+
+        <div class="swiper-slide">
+            <img src="FrontEnd/banner.png" alt="Banner 1">
+        </div>
+
+        <div class="swiper-slide">
+            <img src="banner1.jpeg" alt="Banner 2">
+        </div>
+
+        <div class="swiper-slide">
+            <img src="banner3.jpeg" alt="Banner 3">
+        </div>
+
+        <div class="swiper-slide">
+            <img src="banner4.jpeg" alt="Banner 4">
+        </div>
+
+        <div class="swiper-slide">
+            <img src="banner6.jpeg" alt="Banner 5">
+        </div>
+
+    </div>
+
+    <!-- Previous / Next Buttons -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+
+    <!-- Pagination -->
+    <div class="swiper-pagination banner-image-pagination"></div>
+
+</div>
+
     
 
     <!-- Link to external JavaScript file -->
@@ -82,6 +119,32 @@
 
     <script>
     lucide.createIcons(); -->
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+    const bannerSwiper = new Swiper(".banner-image-swiper", {
+
+        loop: true,
+
+        autoplay: {
+            delay: 3000,
+            disableOnInteraction: false
+        },
+
+        navigation: {
+            nextEl: ".banner-image-swiper .swiper-button-next",
+            prevEl: ".banner-image-swiper .swiper-button-prev"
+        },
+
+        pagination: {
+            el: ".banner-image-pagination",
+            clickable: true
+        },
+
+        speed: 700
+    });
 </script>
 
 </body>
