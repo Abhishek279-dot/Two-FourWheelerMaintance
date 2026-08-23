@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>AutoCare | Vehicle Maintenance System</title>
     
     <!-- Link to external CSS Stylesheet -->
-    <link rel="stylesheet" href="HomePage.css">
+    <link rel="stylesheet" href="homepage.css">
 
         <link
       rel="stylesheet"
@@ -21,63 +21,83 @@
 </head>
 <body>
     <div class="main-container">
-        <div class="header">
-           <h4 id="userRoleDisplay">Admin</h4>
-           <h6 id="userBranch">Swami Service Center</h6>
-            <div class="profile-circle">
-             <!-- <i data-lucide="user" id="userProfile"></i> -->
-              <i class="fa-solid fa-user" class="userProfile"></i>
+        <header class="header">
+            <div class="brand-lockup">
+                <div class="brand-mark"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                <div>
+                    <p class="brand-name">AutoCare</p>
+                    <span class="brand-caption">VEHICLE MAINTENANCE SYSTEM</span>
+                </div>
             </div>
-        </div>
 
-        <div class="menu">
+            <div class="header-account">
+                <div class="account-copy">
+                    <span class="account-label">SIGNED IN AS</span>
+                    <h4 id="userRoleDisplay">Admin</h4>
+                    <h6 id="userBranch">Swami Service Center</h6>
+                </div>
+                <div class="profile-circle" aria-label="User profile">
+                    <i class="fa-solid fa-user userProfile"></i>
+                </div>
+            </div>
+        </header>
+
+        <section class="menu">
+            <div class="menu-heading">
+                <div>
+                    <span class="section-kicker">WORKSHOP CONSOLE</span>
+                    <h1>Keep every vehicle moving.</h1>
+                </div>
+                <div class="service-status"><span class="status-dot"></span> SERVICE CENTER ONLINE</div>
+            </div>
 
             <div class="container">
-    <div class="categories-grid">
+    <div class="categories-grid" aria-label="Service modules">
       <div class="category-item">
         <div class="category-circle">
-                    <img src="Images/JobCard.jpeg" alt="JobCard">
-
+            <img src="Images/JobCard.jpeg" alt="Job Card">
         </div>
-        <h3><pre> Job Card</pre></h3>
+        <h3>Job Card</h3>
+        <span class="category-note">Create & track</span>
       </div>
       <div class="category-item">
         <div class="category-circle">
-                <img src="Images/JCCatlogeBlack.jpeg" alt="JobCard">
-
-
+            <img src="Images/JCCatlogeBlack.jpeg" alt="JC Catalog">
         </div>
-        <h3><pre> JC Catloge</pre></h3>
+        <h3>JC Catalog</h3>
+        <span class="category-note">Service records</span>
       </div>
       <div class="category-item">
         <div class="category-circle">
-            <img src="Images/vehicleHistoryBlack.jpeg" alt="JobCard">
-
+            <img src="Images/vehicleHistoryBlack.jpeg" alt="Vehicle History">
         </div>
-        <h3><pre>  V-History </pre></h3>
+        <h3>Vehicle History</h3>
+        <span class="category-note">Past inspections</span>
       </div>
       <div class="category-item">
         <div class="category-circle">
-                  <img src="Images/ECatlogeBlack.jpeg" alt="JobCard">
-
+            <img src="Images/ECatlogeBlack.jpeg" alt="E-Catalog">
         </div>
-        <h3><pre>  E-Catloge </pre></h3>
+        <h3>E-Catalog</h3>
+        <span class="category-note">Parts lookup</span>
       </div> 
 
 
       <div class="category-item">
         <div class="category-circle">
-                  <img src="Images/InoventryBlack.jpeg" alt="Inoventry">
-
+            <img src="Images/InoventryBlack.jpeg" alt="Inventory">
         </div>
-        <h3><pre> Inventory </pre></h3>
+        <h3>Inventory</h3>
+        <span class="category-note">Stock control</span>
       </div>
     </div>
   </div>
-        </div>
+        </section>
         
                    <!-- Banner Image Swiper -->
-<div class="swiper banner-image-swiper">
+ <section class="banner-section" aria-label="Service center highlights">
+ <div class="banner-label"><span class="section-kicker">SERVICE CENTER HIGHLIGHTS</span><span>Reliable service. Every ride.</span></div>
+ <div class="swiper banner-image-swiper">
 
     <div class="swiper-wrapper">
 
@@ -111,6 +131,7 @@
     <div class="swiper-pagination banner-image-pagination"></div>
 
 </div>
+ </section>
         
     </div>
 
