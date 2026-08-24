@@ -23,9 +23,9 @@ body {
 .main-container { min-height: 100vh; overflow: hidden; }
 
 .header {
-    min-height: 78px;
+    min-height: 58px;
     width: 100%;
-    padding: 0 5.5%;
+    padding: 10px;
     background: var(--navy);
     display: flex;
     align-items: center;
@@ -34,11 +34,18 @@ body {
     border-bottom: 3px solid var(--orange);
 }
 
-.brand-lockup, .header-account, .service-status, .banner-label { display: flex; align-items: center; }
-.brand-lockup { gap: 12px; }
+.brand-lockup, .header-account, .service-status, .banner-label { 
+    display: flex; 
+    align-items: center; 
+}
+
+.brand-lockup { 
+    gap: 10px; 
+}
+
 .brand-mark {
-    width: 42px;
-    height: 42px;
+    width: 32px;
+    height: 32px;
     display: grid;
     place-items: center;
     border-radius: 10px;
@@ -47,18 +54,46 @@ body {
     font-size: 21px;
     transform: rotate(-4deg);
 }
-.brand-name { font-size: 22px; font-weight: 800; letter-spacing: .02em; }
+.brand-name { 
+    font-size: 16px; 
+    font-weight: 800; 
+    letter-spacing: .02em; 
+}
+
 .brand-caption, .account-label, .section-kicker {
     display: block;
-    font-size: 10px;
+    font-size: 8px;
     font-weight: 800;
-    letter-spacing: .16em;
+    letter-spacing: .12em;
 }
-.brand-caption { color: #9db1bd; margin-top: 2px; }
-.header-account { gap: 12px; text-align: right; }
-.account-label { color: #8fa6b4; margin-bottom: 2px; }
-#userRoleDisplay { color: var(--white); font-size: 15px; font-weight: 700; }
-#userBranch { color: #a9bac3; font-size: 11px; font-weight: 500; margin-top: 2px; }
+
+.brand-caption { 
+    color: #9db1bd; 
+    margin-top: 2px; 
+}
+
+.header-account { 
+    gap: 12px; 
+    text-align: right; 
+}
+
+.account-label { 
+    color: #8fa6b4; 
+    margin-bottom: 2px; 
+}
+
+#userRoleDisplay { 
+    color: var(--white); 
+    font-size: 15px; 
+    font-weight: 700; 
+}
+
+#userBranch { color: #a9bac3; 
+    font-size: 11px; 
+    font-weight: 500; 
+    margin-top: 2px; 
+}
+
 .profile-circle {
     height: 39px;
     width: 39px;
