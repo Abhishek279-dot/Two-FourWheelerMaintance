@@ -182,13 +182,13 @@ body {
 .category-item h3 { color: var(--white); font-size: 14px; line-height: 1.2; font-weight: 700; }
 .category-note { display: block; color: #a9c0c9; font-size: 10px; margin-top: 5px; }
 
-.banner-section { width: 89%; max-width: 1200px; margin: 25px auto 35px; }
+.banner-section { width: calc(100% - 20px); max-width: none; margin: 10px; }
 .banner-label { justify-content: space-between; margin-bottom: 10px; }
 .banner-label .section-kicker { color: var(--steel); margin: 0; }
 .banner-label > span:last-child { color: var(--muted); font-size: 12px; font-weight: 600; }
 .banner-image-swiper {
     width: 100%;
-    height: 280px;
+    height: 380px;
     border-radius: 14px;
     overflow: hidden;
     position: relative;
@@ -214,7 +214,7 @@ body {
     .categories-grid { gap: 9px; overflow-x: auto; padding: 2px 2px 7px; scrollbar-width: thin; }
     .category-item { flex: 0 0 154px; }
     .category-circle { height: 100px; }
-    .banner-section { width: calc(100% - 40px); margin-top: 20px; }
+    .banner-section { width: calc(100% - 20px); margin: 10px; }
     .banner-image-swiper { height: 220px; }
 }
 @media (max-width: 480px) {
