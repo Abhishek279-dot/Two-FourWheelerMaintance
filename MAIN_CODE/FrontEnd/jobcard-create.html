@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Job Card — AutoLine DMS</title>
 <link rel="stylesheet" href="jobcard.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
@@ -28,7 +29,254 @@
                 </div>
             </div>
         </header>
-<script>
-</script>
+
+  <main class="page-content">
+    <div class="page-heading">
+      <div>
+        <span class="eyebrow">SERVICE WORKSHOP</span>
+        <h1>Job Card Creation</h1>
+        <p>Enter vehicle and service details to create a new job card.</p>
+      </div>
+      <div class="heading-badge"><i class="fa-solid fa-clipboard-list"></i> New Job Card</div>
+    </div>
+
+    <form id="jobCardForm" class="job-card-form">
+      <section class="form-section vehicle-section">
+        <div class="section-title">
+          <div class="section-icon"><i class="fa-solid fa-motorcycle"></i></div>
+          <div>
+            <h2>Vehicle Details</h2>
+            <p>Search the vehicle using its registration number.</p>
+          </div>
+        </div>
+
+        <div class="vehicle-fields">
+          <div class="field field-registration">
+            <label for="registrationNumber">Vehicle Registered Number <span>*</span></label>
+            <input type="text" id="registrationNumber" placeholder="Enter registration number" autocomplete="off" required>
+            <small>Example: MH12XY1234</small>
+          </div>
+          <div class="field field-model">
+            <label for="vehicleModel">Vehicle Model <span>*</span></label>
+            <div class="input-with-icon">
+              <input type="text" id="vehicleModel" list="vehicleModels" placeholder="Search vehicle model" required>
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </div>
+            <datalist id="vehicleModels">
+              <option value="TVS Jupiter 110 OBD2E"></option>
+              <option value="TVS Activa 6G"></option>
+              <option value="TVS Ntorq 125"></option>
+              <option value="TVS iQube"></option>
+            </datalist>
+            <small>Example: Activa, OBD, Jupiter</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="section-title">
+          <div class="section-icon"><i class="fa-solid fa-user"></i></div>
+          <div>
+            <h2>Customer Details</h2>
+            <p>Keep the customer's contact information up to date.</p>
+          </div>
+        </div>
+
+        <div class="customer-grid">
+          <div class="field">
+            <label for="customerName">Name <span>*</span></label>
+            <input type="text" id="customerName" placeholder="Enter customer name" required>
+          </div>
+          <div class="field">
+            <label for="phoneNumber">Phone Number <span>*</span></label>
+            <input type="tel" id="phoneNumber" placeholder="Enter phone number" inputmode="tel" required>
+          </div>
+          <div class="field field-wide">
+            <label for="customerAddress">Address</label>
+            <input type="text" id="customerAddress" placeholder="Enter customer address">
+          </div>
+          <div class="field">
+            <label for="purchaseDate">Date of Purchase</label>
+            <input type="date" id="purchaseDate">
+          </div>
+        </div>
+      </section>
+
+      <div class="form-columns">
+        <section class="form-section compact-section">
+          <div class="section-title">
+            <div class="section-icon"><i class="fa-solid fa-wrench"></i></div>
+            <div>
+              <h2>Job Type</h2>
+              <p>Select the type of service.</p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="jobType">Job Type <span>*</span></label>
+            <select id="jobType" required>
+              <option value="">Select job type</option>
+              <option>Running Repair</option>
+              <option>1st Service</option>
+              <option>Free Service</option>
+              <option>Paid Service</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="form-section complaints-section">
+          <div class="section-title">
+            <div class="section-icon"><i class="fa-solid fa-list-check"></i></div>
+            <div>
+              <h2>Complaints</h2>
+              <p>Select the complaints reported by the customer.</p>
+            </div>
+          </div>
+          <div class="input-with-icon complaint-search">
+            <input type="search" id="complaintSearch" placeholder="Search complaints">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </div>
+          <div class="complaint-list" id="complaintList">
+            <label class="complaint-item" data-complaint="engine noise">
+              <input type="checkbox" name="complaints" value="Engine Noise" data-price="100">
+              <span>Engine Noise</span><strong>INR 100</strong>
+            </label>
+            <label class="complaint-item" data-complaint="rear lamp not working">
+              <input type="checkbox" name="complaints" value="Rear Lamp Not Working" data-price="2300">
+              <span>Rear Lamp Not Working</span><strong>INR 2300</strong>
+            </label>
+            <label class="complaint-item" data-complaint="suspension setting">
+              <input type="checkbox" name="complaints" value="Suspension Setting" data-price="150">
+              <span>Suspension Setting</span><strong>INR 150</strong>
+            </label>
+          </div>
+          <div class="total-row"><span>Total</span><strong id="complaintTotal">INR 0</strong></div>
+        </section>
+      </div>
+
+      <div class="form-columns lower-columns">
+        <section class="form-section">
+          <div class="section-title">
+            <div class="section-icon"><i class="fa-solid fa-car-burst"></i></div>
+            <div>
+              <h2>Damage Description</h2>
+              <p>Select all visible damage.</p>
+            </div>
+          </div>
+          <div class="damage-list">
+            <label><input type="checkbox" name="damage" value="Side Fender Dent"><span>Side Fender Dent</span></label>
+            <label><input type="checkbox" name="damage" value="Side Tail Light Missing"><span>Side Tail Light Missing</span></label>
+            <label><input type="checkbox" name="damage" value="Scratches"><span>Scratches</span></label>
+          </div>
+        </section>
+
+        <section class="form-section timing-section">
+          <div class="section-title">
+            <div class="section-icon"><i class="fa-regular fa-clock"></i></div>
+            <div>
+              <h2>Service Timing</h2>
+              <p>Choose dates and times manually.</p>
+            </div>
+          </div>
+          <div class="timing-grid">
+            <div class="field">
+              <label for="receivedDate">Vehicle Received Date</label>
+              <input type="date" id="receivedDate">
+            </div>
+            <div class="field">
+              <label for="receivedTime">Time</label>
+              <input type="time" id="receivedTime">
+            </div>
+            <div class="field">
+              <label for="takingDate">Taking Date</label>
+              <input type="date" id="takingDate">
+            </div>
+            <div class="field">
+              <label for="takingTime">Time</label>
+              <input type="time" id="takingTime">
+            </div>
+            <div class="field">
+              <label for="deliveryDate">Delivery Date</label>
+              <input type="date" id="deliveryDate">
+            </div>
+            <div class="field">
+              <label for="deliveryTime">Time</label>
+              <input type="time" id="deliveryTime">
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="form-section final-section">
+        <div class="final-grid">
+          <div class="field advisor-field">
+            <label for="serviceAdvisor">Service Advisor Employee</label>
+            <select id="serviceAdvisor">
+              <option value="">Select employee</option>
+              <option>Vilas Hire</option>
+              <option>Sonu Chavan</option>
+              <option>Sidharam Jirole</option>
+              <option>Ganesh Pawar</option>
+            </select>
+          </div>
+          <fieldset class="picked-field">
+            <legend>Vehicle Has Been Picked</legend>
+            <label><input type="radio" name="vehiclePicked" value="Yes"> Yes</label>
+            <label><input type="radio" name="vehiclePicked" value="No"> No</label>
+          </fieldset>
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <button type="reset" class="button button-secondary">Clear Form</button>
+        <button type="submit" class="button button-primary"><i class="fa-solid fa-plus"></i> Create Job Card</button>
+      </div>
+      <p class="save-note"><i class="fa-solid fa-circle-info"></i> Job card details will be saved and displayed in the JC Catalog.</p>
+    </form>
+  </main>
+
+  <script>
+    const complaintSearch = document.getElementById("complaintSearch");
+    const complaintItems = document.querySelectorAll(".complaint-item");
+    const complaintTotal = document.getElementById("complaintTotal");
+
+    function updateComplaintTotal() {
+      const total = [...document.querySelectorAll('input[name="complaints"]:checked')]
+        .reduce((sum, item) => sum + Number(item.dataset.price), 0);
+      complaintTotal.textContent = `INR ${total.toLocaleString("en-IN")}`;
+    }
+
+    complaintSearch.addEventListener("input", () => {
+      const query = complaintSearch.value.toLowerCase().trim();
+      complaintItems.forEach(item => {
+        item.hidden = query && !item.dataset.complaint.includes(query);
+      });
+    });
+
+    document.querySelectorAll('input[name="complaints"]').forEach(item => {
+      item.addEventListener("change", updateComplaintTotal);
+    });
+
+    document.getElementById("jobCardForm").addEventListener("reset", () => {
+      setTimeout(() => {
+        complaintItems.forEach(item => { item.hidden = false; });
+        updateComplaintTotal();
+      });
+    });
+
+    document.getElementById("jobCardForm").addEventListener("submit", event => {
+      event.preventDefault();
+      showFormMessage("Job card form is ready to be connected with save functionality.");
+    });
+
+    function showFormMessage(message) {
+      let messageBox = document.querySelector(".form-message");
+      if (!messageBox) {
+        messageBox = document.createElement("p");
+        messageBox.className = "form-message";
+        document.querySelector(".form-actions").after(messageBox);
+      }
+      messageBox.textContent = message;
+    }
+  </script>
 </body>
 </html>
