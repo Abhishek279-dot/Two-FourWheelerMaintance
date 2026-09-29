@@ -23,6 +23,9 @@ body {
 .main-container { min-height: 100vh; overflow: hidden; }
 
 .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
     min-height: 58px;
     width: 100%;
     padding: 10px;
@@ -151,6 +154,7 @@ body {
     flex: 0 1 180px;
     min-width: 0;
     text-align: center;
+    text-decoration: none;
     padding: 6px 6px 5px;
     border: 1px solid rgba(157, 196, 207, .22);
     border-radius: 18px;

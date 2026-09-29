@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vehicle History - SV Motors</title>
+  <link rel="stylesheet" href="vehicle-history.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <header class="site-navbar">
+    <div class="navbar-brand">
+      <div class="navbar-mark"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+      <div>
+        <p>SV Motors</p>
+        <span>VEHICLE MAINTENANCE SYSTEM</span>
+      </div>
+    </div>
+    <div class="navbar-account">
+      <div>
+        <span>SIGNED IN AS</span>
+        <strong id="userRole">Admin</strong>
+        <small id="userBranch">Swami Service Center</small>
+      </div>
+      <div class="navbar-profile"><i class="fa-solid fa-user"></i></div>
+    </div>
+  </header>
+
+  <main class="history-page">
+    <header class="history-header">
+      <div class="history-title">
+        <a class="back-link" href="HomePage.html" aria-label="Back to home">
+          <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <div>
+          <span class="eyebrow">SERVICE WORKSHOP</span>
+          <h1>Vehicle History</h1>
+          <p>View vehicle details and previous service records.</p>
+        </div>
+      </div>
+    </header>
+
+    <section class="history-card search-card" aria-label="Vehicle search">
+      <div class="card-heading">
+        <div class="section-icon"><i class="fa-solid fa-motorcycle"></i></div>
+        <div>
+          <h2>Find Vehicle</h2>
+          <p>Enter the registration number and select the vehicle model.</p>
+        </div>
+      </div>
+      <div class="search-fields">
+        <label class="field">
+          <span>Enter Vehicle Registered Number</span>
+          <input id="registrationInput" type="text" list="registrationOptions" placeholder="Example: MH12AB1234" autocomplete="off">
+          <datalist id="registrationOptions"></datalist>
+        </label>
+        <label class="field">
+          <span>Model Of Vehicle</span>
+          <select id="modelInput">
+            <option value="">Select vehicle model</option>
+          </select>
+        </label>
+      </div>
+      <p id="searchMessage" class="search-message" aria-live="polite"></p>
+    </section>
+
+    <section class="history-card vehicle-details-card" aria-labelledby="vehicleDetailsTitle">
+      <div class="card-heading compact-heading">
+        <div class="section-icon"><i class="fa-solid fa-circle-info"></i></div>
+        <h2 id="vehicleDetailsTitle">Vehicle Details</h2>
+      </div>
+      <div class="vehicle-details-grid">
+        <div class="detail-item"><span>Model</span><strong id="vehicleModelValue">-</strong></div>
+        <div class="detail-item"><span>Date Of Purchase</span><strong id="purchaseDateValue">-</strong></div>
+        <div class="detail-item"><span>Dealer Name</span><strong id="dealerNameValue">-</strong></div>
+      </div>
+    </section>
+
+    <section class="history-card service-history-card" aria-labelledby="serviceHistoryTitle">
+      <div class="card-heading history-card-heading">
+        <div>
+          <h2 id="serviceHistoryTitle">History</h2>
+          <p id="historyCount">Select a vehicle to view its service records.</p>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Dealer Code</th>
+              <th>Dealer Name</th>
+              <th>Date</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+      </div>
+      <div id="emptyHistory" class="empty-history">Select a vehicle to view its history.</div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    const data = DMS.get();
+    const vehicles = data.vehicles || [];
+    const registrationInput = document.getElementById("registrationInput");
+    const modelInput = document.getElementById("modelInput");
+    const registrationOptions = document.getElementById("registrationOptions");
+    const historyBody = document.getElementById("historyBody");
+    const emptyHistory = document.getElementById("emptyHistory");
+    const historyCount = document.getElementById("historyCount");
+    const searchMessage = document.getElementById("searchMessage");
+
+    document.getElementById("userRole").textContent = localStorage.getItem("userRole") || data.session?.role || "Admin";
+    document.getElementById("userBranch").textContent = localStorage.getItem("userBranch") || data.session?.branch || "Swami Service Center";
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function formatDate(value) {
+      if (!value) return "-";
+      const date = new Date(`${value}T00:00:00`);
+      return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString("en-IN");
+    }
+
+    function findVehicleByRegistration(value) {
+      const query = String(value || "").trim().toLowerCase();
+      return vehicles.find(vehicle => String(vehicle.registrationNumber || "").toLowerCase() === query);
+    }
+
+    function findVehicleByModel(value) {
+      const query = String(value || "").trim().toLowerCase();
+      return vehicles.find(vehicle => String(vehicle.vehicleModel || "").toLowerCase() === query);
+    }
+
+    function render(vehicle) {
+      document.getElementById("vehicleModelValue").textContent = vehicle?.vehicleModel || "-";
+      document.getElementById("purchaseDateValue").textContent = formatDate(vehicle?.purchaseDate);
+      document.getElementById("dealerNameValue").textContent = vehicle
+        ? (vehicle.dealerName || data.session?.branch || "-")
+        : "-";
+
+      const rows = vehicle
+        ? (data.jobCards || []).filter(jobCard =>
+            String(jobCard.regNo || "").toLowerCase() === String(vehicle.registrationNumber || "").toLowerCase()
+          )
+        : [];
+
+      historyBody.innerHTML = rows.map(jobCard => {
+        const service = jobCard.details || {};
+        const receivedDate = service.receivedDate || jobCard.receivedDate || jobCard.date;
+        return `<tr>
+          <td>${escapeHtml(jobCard.dealerCode || vehicle.dealerCode || data.session?.dealerCode || "-")}</td>
+          <td>${escapeHtml(jobCard.dealerName || vehicle.dealerName || data.session?.branch || "-")}</td>
+          <td>${escapeHtml(formatDate(receivedDate))}</td>
+          <td>${escapeHtml(jobCard.jobType || service.jobType || "-")}</td>
+        </tr>`;
+      }).join("");
+
+      emptyHistory.hidden = rows.length > 0;
+      emptyHistory.textContent = vehicle ? "No service history found for this vehicle." : "Select a vehicle to view its history.";
+      historyCount.textContent = vehicle
+        ? `${rows.length} ${rows.length === 1 ? "service record" : "service records"}`
+        : "Select a vehicle to view its service records.";
+    }
+
+    function selectVehicle(vehicle, syncRegistration = true) {
+      if (!vehicle) {
+        searchMessage.textContent = registrationInput.value.trim() ? "Vehicle not found in local records." : "";
+        render(null);
+        return;
+      }
+      if (syncRegistration) registrationInput.value = vehicle.registrationNumber;
+      modelInput.value = vehicle.vehicleModel;
+      searchMessage.textContent = "";
+      render(vehicle);
+    }
+
+    const uniqueModels = [...new Set(vehicles.map(vehicle => vehicle.vehicleModel).filter(Boolean))];
+    uniqueModels.sort().forEach(model => modelInput.add(new Option(model, model)));
+    registrationOptions.innerHTML = vehicles
+      .map(vehicle => `<option value="${escapeHtml(vehicle.registrationNumber)}"></option>`)
+      .join("");
+
+    registrationInput.addEventListener("input", () => selectVehicle(findVehicleByRegistration(registrationInput.value)));
+    modelInput.addEventListener("change", () => selectVehicle(findVehicleByModel(modelInput.value)));
+    render(null);
+  </script>
+</body>
+</html>

@@ -1,127 +1,111 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parts E-Catalog - SV Motors</title>
+  <link rel="stylesheet" href="parts-catalog.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-
-
-<!-- Model Selection -->
-<div class="parts-model-strip" id="modelStrip"></div>
-
-
-<!-- Assembly View -->
-<div id="assemblyView">
-
-    <div class="panel-head">
-
-        <h3>Select an Assembly</h3>
-
-        <div class="sub" id="modelSub"></div>
-
+  <header class="site-navbar">
+    <div class="navbar-brand">
+      <a class="back-link" href="HomePage.html" aria-label="Back to home"><i class="fa-solid fa-arrow-left"></i></a>
+      <div class="navbar-mark"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+      <div>
+        <p>SV Motors</p>
+        <span>VEHICLE MAINTENANCE SYSTEM</span>
+      </div>
     </div>
-
-    <div id="assemblyGrid" class="assembly-grid"></div>
-
-</div>
-
-
-<!-- Parts Table View -->
-<div id="partsTableView">
-
-    <button
-        class="btn btn-outline btn-sm"
-        id="backBtn"
-    >
-        ← Back to assemblies
-    </button>
-
-
-    <div class="parts-layout">
-
-        <!-- Assembly Diagram -->
-        <div class="diagram-card">
-
-            <div class="dc-head">
-
-                <b id="diagTitle">
-                    Assembly
-                </b>
-
-                <span id="diagFig"></span>
-
-            </div>
-
-            <div
-                class="dc-body"
-                id="diagSvg"
-            ></div>
-
-        </div>
-
-
-        <!-- Parts Table -->
-        <div class="table-wrap">
-
-            <div class="table-toolbar">
-
-                <div
-                    class="count"
-                    id="partsCountLbl"
-                ></div>
-
-
-                <input
-                    type="text"
-                    id="partSearch"
-                    class="part-search"
-                    placeholder="Search part no / name"
-                >
-
-
-                <button
-                    class="btn btn-outline btn-sm"
-                    id="exportPartsBtn"
-                >
-                    ⬇ Export
-                </button>
-
-            </div>
-
-
-            <table id="partsCatTable">
-
-                <thead>
-
-                    <tr>
-                        <th></th>
-                        <th>Ref No</th>
-                        <th>Part No</th>
-                        <th>Part Name</th>
-                        <th>NDP (₹)</th>
-                        <th>MRP (₹)</th>
-                        <th>MOQ</th>
-                        <th>Remarks</th>
-                    </tr>
-
-                </thead>
-
-
-                <tbody id="partsCatBody"></tbody>
-
-            </table>
-
-        </div>
-
+    <div class="navbar-account">
+      <div>
+        <span>SIGNED IN AS</span>
+        <strong id="userRole">Admin</strong>
+        <small id="userBranch">Swami Service Center</small>
+      </div>
+      <div class="navbar-profile"><i class="fa-solid fa-user"></i></div>
     </div>
+  </header>
 
-</div>
+  <nav class="parts-model-strip" id="modelStrip" aria-label="Vehicle models"></nav>
 
+  <main class="catalog-page">
+    <header class="catalog-heading">
+      <div>
+        <span class="eyebrow">PARTS WORKSHOP</span>
+        <h1>Parts E-Catalog</h1>
+        <p>Choose a vehicle model and add its image to the catalog.</p>
+      </div>
+    </header>
 
-<!-- Job Card Cart -->
-<div class="cart-fab">
-    🛒 0 parts added — Add to Job Card
-</div>
+    <section class="catalog-hero" aria-label="Selected vehicle overview">
+      <div class="hero-copy">
+        <span class="eyebrow">SELECTED MODEL</span>
+        <h2 id="modelTitle">NTORQ 125</h2>
+        <p id="modelDescription">Explore assemblies, diagrams and compatible replacement parts.</p>
+        <div class="hero-meta"><span><i class="fa-solid fa-circle-check"></i> Genuine parts</span><span><i class="fa-solid fa-screwdriver-wrench"></i> Workshop ready</span></div>
+      </div>
+      <div class="vehicle-visual" id="vehicleVisual" aria-label="Vehicle image placeholder">
+        <img src="tvsJ110.png" alt="TvsJupiter110">
+      </div>
+    </section>
+  </main>
 
+  <script src="app.js"></script>
+  <script>
+    const data = DMS.get();
+    const models = ["NTORQ 125", "JUPITER 110", "IQUBE", "WEGO 110", "JUPITER 125", "JUPITER 110 - 2024", "NTORQ 150", "ORBITER"];
+    // Add each vehicle image path or URL here. Empty values keep the placeholder visible.
+    const modelImages = {
+      "NTORQ 125": "",
+      "JUPITER 110": "",
+      "IQUBE": "",
+      "WEGO 110": "",
+      "JUPITER 125": "",
+      "JUPITER 110 - 2024": "tvsJ110.png",
+      "NTORQ 150": "",
+      "ORBITER": ""
+    };
+    const modelDescriptions = {
+      "NTORQ 125": "Performance scooter assemblies and service parts.",
+      "JUPITER 110": "Everyday scooter assemblies for dependable service.",
+      "IQUBE": "Electric scooter components and battery assemblies.",
+      "WEGO 110": "Compact scooter parts for routine workshop service.",
+      "JUPITER 125": "Premium scooter assemblies and replacement parts.",
+      "JUPITER 110 - 2024": "2024 model-specific parts and assemblies.",
+      "NTORQ 150": "Performance scooter parts and workshop references.",
+      "ORBITER": "Electric scooter assemblies and genuine parts."
+    };
+    const modelStrip = document.getElementById("modelStrip");
+    const session = data.session || {};
+    let selectedModel = models[0];
+
+    document.getElementById("userRole").textContent = localStorage.getItem("userRole") || session.role || "Admin";
+    document.getElementById("userBranch").textContent = localStorage.getItem("userBranch") || session.branch || "Swami Service Center";
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    function renderModelStrip() {
+      modelStrip.innerHTML = models.map(model => `<button class="model-tab${model === selectedModel ? " active" : ""}" type="button" data-model="${escapeHtml(model)}">${escapeHtml(model)}</button>`).join("");
+      modelStrip.querySelectorAll("[data-model]").forEach(button => button.addEventListener("click", () => {
+        selectedModel = button.dataset.model;
+        renderModel();
+      }));
+    }
+
+    function renderModel() {
+      document.getElementById("modelTitle").textContent = selectedModel;
+      document.getElementById("modelDescription").textContent = modelDescriptions[selectedModel];
+      const imageUrl = modelImages[selectedModel];
+      document.getElementById("vehicleVisual").innerHTML = imageUrl
+        ? `<img class="model-image" src="${escapeHtml(imageUrl)}" alt="${escapeHtml(selectedModel)}">`
+        : `<div class="image-placeholder"><i class="fa-regular fa-image"></i><strong>${escapeHtml(selectedModel)} image placeholder</strong><span>Add your vehicle image here</span></div>`;
+      renderModelStrip();
+    }
+
+    renderModel();
+  </script>
 </body>
 </html>

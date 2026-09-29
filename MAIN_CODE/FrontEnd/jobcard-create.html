@@ -32,10 +32,15 @@
 
   <main class="page-content">
     <div class="page-heading">
-      <div>
-        <span class="eyebrow">SERVICE WORKSHOP</span>
-        <h1>Job Card Creation</h1>
-        <p>Enter vehicle and service details to create a new job card.</p>
+      <div class="page-heading-title">
+        <a class="back-link" href="HomePage.html" aria-label="Back to home">
+          <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <div>
+          <span class="eyebrow">SERVICE WORKSHOP</span>
+          <h1>Job Card Creation</h1>
+          <p>Enter vehicle and service details to create a new job card.</p>
+        </div>
       </div>
       <div class="heading-badge"><i class="fa-solid fa-clipboard-list"></i> New Job Card</div>
     </div>
@@ -53,7 +58,8 @@
         <div class="vehicle-fields">
           <div class="field field-registration">
             <label for="registrationNumber">Vehicle Registered Number <span>*</span></label>
-            <input type="text" id="registrationNumber" placeholder="Enter registration number" autocomplete="off" required>
+            <input type="text" id="registrationNumber" list="vehicleRegistrations" placeholder="Enter registration number" autocomplete="off" required>
+            <datalist id="vehicleRegistrations"></datalist>
             <small>Example: MH12XY1234</small>
           </div>
           <div class="field field-model">
@@ -208,10 +214,17 @@
 
       <section class="form-section final-section">
         <div class="final-grid">
+          <div class="field allocation-field">
+            <label for="vehicleAllocation">Vehicle Allocation <span>*</span></label>
+            <select id="vehicleAllocation" required>
+              <option value="">Select mechanic</option>
+            </select>
+            <small>Allocate this vehicle to a mechanic.</small>
+          </div>
           <div class="field advisor-field">
-            <label for="serviceAdvisor">Service Advisor Employee</label>
+            <label for="serviceAdvisor">Service Advisor</label>
             <select id="serviceAdvisor">
-              <option value="">Select employee</option>
+              <option value="">Select advisor</option>
               <option>Vilas Hire</option>
               <option>Sonu Chavan</option>
               <option>Sidharam Jirole</option>
@@ -234,7 +247,61 @@
     </form>
   </main>
 
+  <script src="app.js"></script>
   <script>
+    const vehicleData = DMS.get().vehicles || [];
+    const registrationInput = document.getElementById("registrationNumber");
+    const modelInput = document.getElementById("vehicleModel");
+    const registrationList = document.getElementById("vehicleRegistrations");
+    const modelList = document.getElementById("vehicleModels");
+    const customerNameInput = document.getElementById("customerName");
+    const phoneNumberInput = document.getElementById("phoneNumber");
+    const customerAddressInput = document.getElementById("customerAddress");
+    const purchaseDateInput = document.getElementById("purchaseDate");
+    const vehicleAllocationInput = document.getElementById("vehicleAllocation");
+    const serviceAdvisorInput = document.getElementById("serviceAdvisor");
+    const catalogData = DMS.get();
+    const mechanics = catalogData.mechanics || [];
+    const serviceAdvisors = catalogData.serviceAdvisors || [];
+    const vehiclesByRegistration = new Map(
+      vehicleData.map(vehicle => [vehicle.registrationNumber.toLowerCase(), vehicle])
+    );
+    const vehiclesByModel = new Map(
+      vehicleData.map(vehicle => [vehicle.vehicleModel.toLowerCase(), vehicle])
+    );
+
+    registrationList.innerHTML = vehicleData
+      .map(vehicle => `<option value="${vehicle.registrationNumber}"></option>`)
+      .join("");
+    modelList.innerHTML = vehicleData
+      .map(vehicle => `<option value="${vehicle.vehicleModel}"></option>`)
+      .join("");
+
+    function populateOptions(select, placeholder, names) {
+      select.replaceChildren(new Option(placeholder, ""));
+      names.forEach(name => select.add(new Option(name, name)));
+    }
+
+    populateOptions(vehicleAllocationInput, "Select mechanic", mechanics);
+    populateOptions(serviceAdvisorInput, "Select advisor", serviceAdvisors);
+
+    function fillVehicleDetails(vehicle) {
+      if (!vehicle) return;
+      registrationInput.value = vehicle.registrationNumber;
+      modelInput.value = vehicle.vehicleModel;
+      customerNameInput.value = vehicle.customerName || "";
+      phoneNumberInput.value = vehicle.phoneNumber || "";
+      customerAddressInput.value = vehicle.customerAddress || "";
+      purchaseDateInput.value = vehicle.purchaseDate || "";
+    }
+
+    registrationInput.addEventListener("input", () => {
+      fillVehicleDetails(vehiclesByRegistration.get(registrationInput.value.trim().toLowerCase()));
+    });
+    modelInput.addEventListener("input", () => {
+      fillVehicleDetails(vehiclesByModel.get(modelInput.value.trim().toLowerCase()));
+    });
+
     const complaintSearch = document.getElementById("complaintSearch");
     const complaintItems = document.querySelectorAll(".complaint-item");
     const complaintTotal = document.getElementById("complaintTotal");
@@ -265,7 +332,94 @@
 
     document.getElementById("jobCardForm").addEventListener("submit", event => {
       event.preventDefault();
-      showFormMessage("Job card form is ready to be connected with save functionality.");
+
+      const form = event.currentTarget;
+      const submitButton = form.querySelector('button[type="submit"]');
+      const complaints = [...form.querySelectorAll('input[name="complaints"]:checked')]
+        .map(item => ({ name: item.value, price: Number(item.dataset.price || 0) }));
+      const damages = [...form.querySelectorAll('input[name="damage"]:checked')]
+        .map(item => item.value);
+      const picked = form.querySelector('input[name="vehiclePicked"]:checked');
+
+      const session = DMS.get().session || {};
+      const payload = {
+        registrationNumber: document.getElementById("registrationNumber").value.trim(),
+        vehicleModel: document.getElementById("vehicleModel").value.trim(),
+        customerName: document.getElementById("customerName").value.trim(),
+        phoneNumber: document.getElementById("phoneNumber").value.trim(),
+        customerAddress: document.getElementById("customerAddress").value.trim(),
+        purchaseDate: document.getElementById("purchaseDate").value,
+        jobType: document.getElementById("jobType").value,
+        complaints,
+        damages,
+        receivedDate: document.getElementById("receivedDate").value,
+        receivedTime: document.getElementById("receivedTime").value,
+        takingDate: document.getElementById("takingDate").value,
+        takingTime: document.getElementById("takingTime").value,
+        deliveryDate: document.getElementById("deliveryDate").value,
+        deliveryTime: document.getElementById("deliveryTime").value,
+        dealerCode: session.dealerCode || "",
+        dealerName: session.branch || "",
+        vehicleAllocation: vehicleAllocationInput.value,
+        serviceAdvisor: serviceAdvisorInput.value,
+        vehiclePicked: picked ? picked.value : ""
+      };
+
+      submitButton.disabled = true;
+      submitButton.textContent = "Saving...";
+
+      const jobCardId = `JC-${Date.now()}`;
+      const jobCard = {
+        id: jobCardId,
+        frameNo: "",
+        regNo: payload.registrationNumber,
+        customer: payload.customerName,
+        model: payload.vehicleModel,
+        dealerCode: payload.dealerCode,
+        dealerName: payload.dealerName,
+        jobType: payload.jobType,
+        status: "Job Created",
+        date: payload.receivedDate || new Date().toISOString().slice(0, 10),
+        mechanic: payload.vehicleAllocation || payload.serviceAdvisor || "Unassigned",
+        vehicleAllocation: payload.vehicleAllocation || "",
+        labourTotal: 0,
+        partsTotal: 0,
+        details: payload
+      };
+
+      const savedData = DMS.update(data => {
+        data.jobCards.unshift(jobCard);
+        DMS.upsertVehicle(data, {
+          registrationNumber: payload.registrationNumber,
+          vehicleModel: payload.vehicleModel,
+          customerName: payload.customerName,
+          phoneNumber: payload.phoneNumber,
+          customerAddress: payload.customerAddress,
+          purchaseDate: payload.purchaseDate,
+          dealerCode: payload.dealerCode,
+          dealerName: payload.dealerName
+        });
+      });
+
+      const savedVehicle = savedData.vehicles.find(vehicle =>
+        vehicle.registrationNumber.toLowerCase() === payload.registrationNumber.toLowerCase()
+      );
+      if (savedVehicle) {
+        vehiclesByRegistration.set(savedVehicle.registrationNumber.toLowerCase(), savedVehicle);
+        vehiclesByModel.set(savedVehicle.vehicleModel.toLowerCase(), savedVehicle);
+        if (![...registrationList.options].some(option => option.value === savedVehicle.registrationNumber)) {
+          registrationList.insertAdjacentHTML("beforeend", `<option value="${savedVehicle.registrationNumber}"></option>`);
+        }
+        if (![...modelList.options].some(option => option.value === savedVehicle.vehicleModel)) {
+          modelList.insertAdjacentHTML("beforeend", `<option value="${savedVehicle.vehicleModel}"></option>`);
+        }
+      }
+
+      showFormMessage(`Job card saved locally. Job Card ID: ${jobCardId}`);
+      form.reset();
+      updateComplaintTotal();
+      submitButton.disabled = false;
+      submitButton.innerHTML = '<i class="fa-solid fa-plus"></i> Create Job Card';
     });
 
     function showFormMessage(message) {

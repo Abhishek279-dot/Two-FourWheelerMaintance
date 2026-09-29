@@ -1,0 +1,103 @@
+:root {
+  --navy: #0d1b2a;
+  --ink: #17202b;
+  --muted: #718096;
+  --line: #dbe4e8;
+  --surface: #f4f7f8;
+  --white: #ffffff;
+  --orange: #f47b20;
+  --orange-dark: #cf5b0e;
+  --steel: #1d4059;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  min-width: 320px;
+  margin: 0;
+  color: var(--ink);
+  background: var(--steel);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.site-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 58px;
+  padding: 10px 22px;
+  color: var(--white);
+  background: var(--navy);
+  border-bottom: 3px solid var(--orange);
+}
+
+.navbar-brand, .navbar-account { display: flex; align-items: center; }
+.navbar-brand { gap: 10px; }
+.navbar-mark {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--navy);
+  background: var(--orange);
+  font-size: 21px;
+  transform: rotate(-4deg);
+}
+.navbar-brand p { margin: 0; font-size: 16px; font-weight: 800; letter-spacing: .02em; }
+.navbar-brand span, .navbar-account span { display: block; color: #9db1bd; font-size: 8px; font-weight: 800; letter-spacing: .12em; }
+.navbar-brand span { margin-top: 2px; }
+.navbar-account { gap: 12px; text-align: right; }
+.navbar-account strong { display: block; margin-top: 2px; color: var(--white); font-size: 15px; }
+.navbar-account small { display: block; margin-top: 2px; color: #a9bac3; font-size: 11px; }
+.navbar-profile { display: grid; width: 39px; height: 39px; place-items: center; border: 1px solid #486172; border-radius: 50%; color: var(--orange); background: #20384a; }
+
+.history-page { width: min(1180px, calc(100% - 48px)); margin: 0 auto; padding: 30px 0 50px; }
+.history-header { margin-bottom: 24px; }
+.history-title { display: flex; align-items: center; gap: 16px; }
+.back-link { display: grid; width: 40px; height: 40px; place-items: center; border-radius: 10px; color: var(--steel); background: var(--white); box-shadow: 0 4px 14px rgba(23, 32, 43, .08); text-decoration: none; }
+.back-link:hover { color: var(--orange); }
+.eyebrow { display: block; margin-bottom: 5px; color: var(--orange); font-size: 10px; font-weight: 800; letter-spacing: .15em; }
+h1 { margin: 0; color: var(--white); font-size: clamp(25px, 3vw, 36px); letter-spacing: -.04em; }
+.history-title p { margin: 5px 0 0; color: #c2cbd1; font-size: 13px; }
+
+.history-card { margin-bottom: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--white); box-shadow: 0 12px 30px rgba(23, 32, 43, .08); }
+.search-card { padding: 22px; }
+.card-heading { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
+.compact-heading { align-items: center; margin-bottom: 0; }
+.card-heading h2 { margin: 0; color: var(--navy); font-size: 17px; }
+.card-heading p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+.section-icon { display: grid; width: 34px; height: 34px; flex: 0 0 34px; place-items: center; border-radius: 10px; color: var(--orange-dark); background: #fff1e6; }
+.search-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.field span, .detail-item span { display: block; margin-bottom: 8px; color: #52606d; font-size: 13px; font-weight: 800; }
+.field input, .field select { width: 100%; min-height: 50px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; outline: none; color: var(--ink); background: #fbfcfd; font: inherit; font-size: 15px; font-weight: 700; }
+.field input:focus, .field select:focus { border-color: var(--orange); background: var(--white); box-shadow: 0 0 0 3px rgba(244, 123, 32, .12); }
+.search-message { min-height: 16px; margin: 10px 0 0; color: var(--orange-dark); font-size: 12px; font-weight: 700; }
+
+.vehicle-details-card { padding: 20px 22px; }
+.vehicle-details-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); }
+.detail-item strong { display: block; color: var(--steel); font-size: 15px; }
+.service-history-card { overflow: hidden; }
+.history-card-heading { align-items: center; justify-content: space-between; margin: 0; padding: 20px 22px; border-bottom: 1px solid var(--line); }
+.history-card-heading p { margin-top: 4px; }
+.table-scroll { overflow-x: auto; }
+table { width: 100%; min-width: 620px; border-collapse: collapse; }
+th, td { padding: 16px 18px; border-bottom: 1px solid #edf1f3; text-align: left; white-space: nowrap; }
+th { color: #52606d; background: #f8fafb; font-size: 10px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
+td { color: #344454; font-size: 13px; font-weight: 600; }
+tbody tr:hover { background: #fffaf5; }
+tbody tr:last-child td { border-bottom: 0; }
+td:first-child { color: var(--steel); font-weight: 800; }
+.empty-history { padding: 44px 20px; color: var(--muted); text-align: center; font-size: 13px; }
+.empty-history[hidden] { display: none; }
+
+@media (max-width: 700px) {
+  .site-navbar { padding: 10px 14px; }
+  .navbar-account > div:first-child { display: none; }
+  .history-page { width: min(100% - 24px, 1180px); padding-top: 20px; }
+  .search-fields, .vehicle-details-grid { grid-template-columns: 1fr; }
+  .history-card { border-radius: 10px; }
+}

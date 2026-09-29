@@ -1,135 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Service History — AutoLine DMS</title>
-<link rel="stylesheet" href="style.css">
-
-     <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JC Catalog - SV Motors</title>
+  <link rel="stylesheet" href="jobcard-catalog.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-<div class="app-shell">
-  <div class="sidebar" id="sidebar"></div>
-  <div class="overlay-bg" id="overlayBg"></div>
-  <div class="main">
-    <div class="topbar" id="topbar"></div>
-    <div class="content">
+  <header class="site-navbar">
+    <div class="navbar-brand">
+      <div class="navbar-mark"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+      <div>
+        <p>SV Motors</p>
+        <span>VEHICLE MAINTENANCE SYSTEM</span>
+      </div>
+    </div>
+    <div class="navbar-account">
+      <div>
+        <span>SIGNED IN AS</span>
+        <strong>Admin</strong>
+        <small>Swami Service Center</small>
+      </div>
+      <div class="navbar-profile"><i class="fa-solid fa-user"></i></div>
+    </div>
+  </header>
 
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
-        <div></div>
-        <div style="display:flex; gap:8px;">
-          <button class="btn btn-outline btn-sm" id="exportBtn">⬇ Export CSV</button>
-          <a href="jobcard-create.html" class="btn btn-primary btn-sm">+ New Job Card</a>
+  <main class="catalog-page">
+    <header class="catalog-header">
+      <div class="catalog-title">
+        <a class="back-link" href="HomePage.html" aria-label="Back to home">
+          <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <div>
+          <span class="eyebrow">SERVICE WORKSHOP</span>
+          <h1>JC Catalog</h1>
+          <p>Manage all vehicle job cards and service records.</p>
         </div>
       </div>
+      <a class="new-job-card" href="jobcard-create.html">
+        <i class="fa-solid fa-plus"></i> New Job Card
+      </a>
+    </header>
 
-      <div class="table-wrap">
-        <div class="filters-row">
-          <div class="field"><label>Frame No</label><input id="fFrame" placeholder="Search"></div>
-          <div class="field"><label>Registration No</label><input id="fReg" placeholder="Search"></div>
-          <div class="field"><label>Customer</label><input id="fCustomer" placeholder="Search"></div>
-          <div class="field"><label>Status</label>
-            <select id="fStatus">
-              <option value="">All</option>
-              <option>Allocated</option>
-              <option>Job Completed</option>
-              <option>Closed</option>
-            </select>
-          </div>
-          <div class="field"><label>Job Type</label>
-            <select id="fType">
-              <option value="">All</option>
-              <option>Running Repair</option>
-              <option>Paid Service</option>
-              <option>1st Free Service</option>
-              <option>2nd Free Service</option>
-              <option>3rd Free Service</option>
-            </select>
-          </div>
+    <section class="catalog-card" aria-label="Job card catalog">
+      <div class="catalog-toolbar">
+        <div>
+          <h2>Job Card Records</h2>
+          <span id="recordCount">0 records</span>
         </div>
-        <div class="table-toolbar">
-          <div class="count" id="rowCount"></div>
-        </div>
-        <table id="jcTable">
+        <label class="catalog-search">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input id="catalogSearch" type="search" placeholder="Search job card, vehicle, customer or model" autocomplete="off">
+        </label>
+      </div>
+
+      <div class="table-scroll">
+        <table>
           <thead>
             <tr>
-              <th>Job Card No</th><th>Frame No</th><th>Reg No</th><th>Customer</th><th>Model</th>
-              <th>Job Type</th><th>Mechanic</th><th>Status</th><th>Date</th><th>Total (₹)</th><th></th>
+              <th>Sr. No.</th>
+              <th>JC No.</th>
+              <th>Vehicle No.</th>
+              <th>Customer Name</th>
+              <th>Date</th>
+              <th>Phone No.</th>
+              <th>Model</th>
+              <th aria-label="Search"></th>
+              <th aria-label="Actions"></th>
             </tr>
           </thead>
-          <tbody id="jcBody"></tbody>
+          <tbody id="catalogBody"></tbody>
         </table>
-        <div class="empty-state" id="emptyState" style="display:none;">
-          <div class="ic">🗂️</div>
-          No job cards match these filters. Try clearing a filter.
-        </div>
       </div>
+      <div class="empty-state" id="emptyState" hidden>No job cards match your search.</div>
+    </section>
+  </main>
 
-    </div>
-  </div>
-</div>
+  <script src="app.js"></script>
+  <script>
+    const catalogBody = document.getElementById("catalogBody");
+    const catalogSearch = document.getElementById("catalogSearch");
+    const recordCount = document.getElementById("recordCount");
+    const emptyState = document.getElementById("emptyState");
 
-<script src="Images/js/app.js"></script>
-<script>
-requireLogin();
-buildShell("jobcard-list.html", "Service / Vehicle Service History", "All job cards across " + DMS.get().session.branch);
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
 
-function render() {
-  const data = DMS.get();
-  const params = new URLSearchParams(window.location.search);
-  const q = (params.get("q") || "").toLowerCase();
+    function getCatalogRows() {
+      const data = DMS.get();
+      const vehicles = new Map((data.vehicles || []).map(vehicle => [
+        vehicle.registrationNumber.toLowerCase(), vehicle
+      ]));
+      const query = catalogSearch.value.trim().toLowerCase();
 
-  const fFrame = document.getElementById("fFrame").value.toLowerCase();
-  const fReg = document.getElementById("fReg").value.toLowerCase();
-  const fCustomer = document.getElementById("fCustomer").value.toLowerCase();
-  const fStatus = document.getElementById("fStatus").value;
-  const fType = document.getElementById("fType").value;
+      return data.jobCards
+        .map(jobCard => {
+          const vehicle = vehicles.get((jobCard.regNo || "").toLowerCase()) || {};
+          return {
+            ...jobCard,
+            phone: jobCard.details?.phoneNumber || vehicle.phoneNumber || "-",
+            customer: jobCard.customer || vehicle.customerName || "-",
+            model: jobCard.model || vehicle.vehicleModel || "-"
+          };
+        })
+        .filter(jobCard => {
+          if (!query) return true;
+          return [jobCard.id, jobCard.regNo, jobCard.customer, jobCard.phone, jobCard.model]
+            .some(value => String(value || "").toLowerCase().includes(query));
+        });
+    }
 
-  let rows = data.jobCards.filter(r => {
-    if (q && !(r.id.toLowerCase().includes(q) || r.frameNo.toLowerCase().includes(q) || r.regNo.toLowerCase().includes(q) || r.customer.toLowerCase().includes(q))) return false;
-    if (fFrame && !r.frameNo.toLowerCase().includes(fFrame)) return false;
-    if (fReg && !r.regNo.toLowerCase().includes(fReg)) return false;
-    if (fCustomer && !r.customer.toLowerCase().includes(fCustomer)) return false;
-    if (fStatus && r.status !== fStatus) return false;
-    if (fType && r.jobType !== fType) return false;
-    return true;
-  });
+    function renderCatalog() {
+      const rows = getCatalogRows();
+      recordCount.textContent = `${rows.length} ${rows.length === 1 ? "record" : "records"}`;
+      emptyState.hidden = rows.length > 0;
 
-  document.getElementById("rowCount").textContent = rows.length + " total";
-  document.getElementById("emptyState").style.display = rows.length ? "none" : "block";
-  document.getElementById("jcTable").style.display = rows.length ? "table" : "none";
+      catalogBody.innerHTML = rows.map((jobCard, index) => `
+        <tr>
+          <td class="serial-number">${index + 1}</td>
+          <td class="job-card-number">
+            ${escapeHtml(jobCard.id)}
+            ${jobCard.status === "Cancelled" ? '<span class="cancelled-label">Cancelled</span>' : ""}
+          </td>
+          <td class="vehicle-number">${escapeHtml(jobCard.regNo)}</td>
+          <td>${escapeHtml(jobCard.customer)}</td>
+          <td>${escapeHtml(jobCard.date)}</td>
+          <td>${escapeHtml(jobCard.phone)}</td>
+          <td class="model-cell">${escapeHtml(jobCard.model)}</td>
+          <td class="row-search"><button class="icon-button" type="button" title="Search this vehicle" data-search="${escapeHtml(jobCard.regNo)}"><i class="fa-solid fa-magnifying-glass"></i></button></td>
+          <td class="row-menu-cell">
+            <button class="icon-button menu-button" type="button" title="More actions" aria-label="More actions" data-menu="${escapeHtml(jobCard.id)}"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+            <div class="action-menu" data-actions="${escapeHtml(jobCard.id)}" hidden>
+              <button type="button" data-action="toggle-cancel" data-id="${escapeHtml(jobCard.id)}">${jobCard.status === "Cancelled" ? "Uncancel Vehicle" : "Cancel Vehicle"}</button>
+              <button type="button" data-action="details" data-id="${escapeHtml(jobCard.id)}">Details</button>
+              <button type="button" data-action="invoice" data-id="${escapeHtml(jobCard.id)}">Create Invoice</button>
+            </div>
+          </td>
+        </tr>`).join("");
 
-  document.getElementById("jcBody").innerHTML = rows.map(r => `
-    <tr>
-      <td><a href="jobcard-create.html?id=${r.id}">${r.id}</a></td>
-      <td>${r.frameNo}</td>
-      <td>${r.regNo}</td>
-      <td>${r.customer}</td>
-      <td>${r.model}</td>
-      <td>${r.jobType}</td>
-      <td>${r.mechanic}</td>
-      <td>${statusPill(r.status)}</td>
-      <td>${r.date}</td>
-      <td>₹${(r.labourTotal + r.partsTotal).toLocaleString('en-IN')}</td>
-      <td><a href="jobcard-create.html?id=${r.id}" class="btn btn-outline btn-sm">Open</a></td>
-    </tr>`).join("");
-}
+      catalogBody.querySelectorAll("[data-menu]").forEach(button => {
+        button.addEventListener("click", event => {
+          event.stopPropagation();
+          document.querySelectorAll(".action-menu").forEach(menu => { menu.hidden = true; });
+          const actionMenu = [...document.querySelectorAll(".action-menu")]
+            .find(menu => menu.dataset.actions === button.dataset.menu);
+          if (actionMenu) actionMenu.hidden = false;
+        });
+      });
 
-["fFrame","fReg","fCustomer","fStatus","fType"].forEach(id => {
-  document.getElementById(id).addEventListener("input", render);
-  document.getElementById(id).addEventListener("change", render);
-});
+      catalogBody.querySelectorAll("[data-search]").forEach(button => {
+        button.addEventListener("click", () => {
+          catalogSearch.value = button.dataset.search;
+          renderCatalog();
+        });
+      });
+    }
 
-document.getElementById("exportBtn").addEventListener("click", () => {
-  exportTableToCSV("jcTable", "service-history.csv");
-  showToast("CSV exported ✓", "success");
-});
+    catalogBody.addEventListener("click", event => {
+      const actionButton = event.target.closest("[data-action]");
+      if (!actionButton) return;
 
-render();
-</script>
+      const jobCardId = actionButton.dataset.id;
+      const action = actionButton.dataset.action;
+      const data = DMS.get();
+      const jobCard = data.jobCards.find(item => item.id === jobCardId);
+      document.querySelectorAll(".action-menu").forEach(menu => { menu.hidden = true; });
+
+      if (!jobCard) return;
+      if (action === "toggle-cancel") {
+        const restoring = jobCard.status === "Cancelled";
+        const message = restoring
+          ? `Uncancel job card ${jobCardId}?`
+          : `Cancel job card ${jobCardId}?`;
+        if (!window.confirm(message)) return;
+
+        DMS.update(current => {
+          const item = current.jobCards.find(row => row.id === jobCardId);
+          if (!item) return;
+          if (item.status === "Cancelled") {
+            item.status = item.cancelledFromStatus || "Job Created";
+            delete item.cancelledFromStatus;
+          } else {
+            item.cancelledFromStatus = item.status || "Job Created";
+            item.status = "Cancelled";
+          }
+        });
+        renderCatalog();
+      } else if (action === "details") {
+        window.open(`jobcard-details.html?id=${encodeURIComponent(jobCardId)}`, "_blank", "noopener");
+      } else if (action === "invoice") {
+        window.alert(`Invoice creation started for ${jobCard.id}.`);
+      }
+    });
+
+    catalogSearch.addEventListener("input", renderCatalog);
+    document.addEventListener("click", () => {
+      document.querySelectorAll(".action-menu").forEach(menu => { menu.hidden = true; });
+    });
+    renderCatalog();
+  </script>
 </body>
 </html>

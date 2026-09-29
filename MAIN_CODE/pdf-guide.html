@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HomePage Header Dynamic Role Update Guide</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      color: #111;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    h1 {
+      font-size: 22px;
+      margin: 0 0 18px;
+    }
+    h2 {
+      font-size: 16px;
+      margin: 18px 0 8px;
+    }
+    ul {
+      margin: 8px 0 0 20px;
+      padding: 0;
+    }
+    li {
+      margin: 4px 0;
+    }
+    p {
+      margin: 8px 0;
+    }
+    code {
+      background: #f3f3f3;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <h1>HomePage Header Dynamic Role Update Guide</h1>
+
+  <h2>What this change does</h2>
+  <ul>
+    <li>Moves the profile circle to the top-right header area.</li>
+    <li>Shows the selected login role next to the circle.</li>
+    <li>Keeps the text format as Admin, Manager, Mechanic.</li>
+    <li>Uses User as the fallback if no role is saved.</li>
+  </ul>
+
+  <h2>File 1: index.html</h2>
+  <p>Replace the current login submit script at the bottom of the file.</p>
+  <p>Save the selected role into <code>localStorage</code> after a valid login.</p>
+  <p>Keep the redirect to <code>HomePage.html</code> after success.</p>
+
+  <h2>File 2: HomePage.html</h2>
+  <p>Replace the header block so the circle appears before the role text.</p>
+  <p>Add a <code>DOMContentLoaded</code> script before <code>&lt;/body&gt;</code> to read <code>localStorage</code>.</p>
+  <p>If no role exists, show <code>User</code> by default.</p>
+
+  <h2>File 3: mainStyle.css</h2>
+  <p>Change <code>.header</code> to display:flex and align the items to the right.</p>
+  <p>Remove absolute positioning from <code>.profile-circle</code>.</p>
+  <p>Reset <code>#userRoleDisplay</code> margin so it sits neatly beside the circle.</p>
+
+  <h2>Result</h2>
+  <p>The top-right area will show the circle and the logged-in role side by side.</p>
+  <p>The display will be dynamic and match the login selection.</p>
+</body>
+</html>

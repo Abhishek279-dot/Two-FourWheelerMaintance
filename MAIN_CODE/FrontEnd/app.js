@@ -3,25 +3,82 @@
 const DMS = (() => {
   const LS_KEY = "autoline_dms_data_v1";
 
+  function seedVehicles() {
+    return [
+      { registrationNumber: "MH12AB1234", vehicleModel: "TVS Jupiter 110 OBD2E", customerName: "Ramesh Patil", phoneNumber: "9876543210", customerAddress: "Pune, Maharashtra", purchaseDate: "2024-04-15", dealerCode: "62380", dealerName: "YASH AUTOMOTORS" },
+      { registrationNumber: "MH12CD5566", vehicleModel: "TVS Activa 6G", customerName: "Sunita Kale", phoneNumber: "9876543211", customerAddress: "Nashik, Maharashtra", purchaseDate: "2023-11-20", dealerCode: "62380", dealerName: "YASH AUTOMOTORS" },
+      { registrationNumber: "MH12EF7788", vehicleModel: "TVS Ntorq 125", customerName: "Amit Deshmukh", phoneNumber: "9876543212", customerAddress: "Kolhapur, Maharashtra", purchaseDate: "2024-01-08", dealerCode: "62380", dealerName: "YASH AUTOMOTORS" },
+      { registrationNumber: "MH12GH9900", vehicleModel: "TVS iQube", customerName: "Priya Shinde", phoneNumber: "9876543213", customerAddress: "Satara, Maharashtra", purchaseDate: "2024-06-12", dealerCode: "62380", dealerName: "YASH AUTOMOTORS" },
+      { registrationNumber: "MH12IJ2211", vehicleModel: "TVS Jupiter Classic", customerName: "Nikhil Gaikwad", phoneNumber: "9876543214", customerAddress: "Mumbai, Maharashtra", purchaseDate: "2023-08-25", dealerCode: "62380", dealerName: "YASH AUTOMOTORS" },
+      { registrationNumber: "MH12KL3344", vehicleModel: "TVS Jupiter 110 DR", customerName: "Swapnil More", phoneNumber: "9876543215", customerAddress: "Pimpri, Maharashtra", purchaseDate: "2023-05-17", dealerCode: "62380", dealerName: "YASH AUTOMOTORS" },
+      { registrationNumber: "MH12MN5566", vehicleModel: "TVS RONIN 1CH BASE", customerName: "Rohit Jadhav", phoneNumber: "9876543216", customerAddress: "Baramati, Maharashtra", purchaseDate: "2024-02-22", dealerCode: "62380", dealerName: "YASH AUTOMOTORS" },
+      { registrationNumber: "MH12OP7788", vehicleModel: "TVS Jupiter 125", customerName: "Sneha Kulkarni", phoneNumber: "9876543217", customerAddress: "Pune, Maharashtra", purchaseDate: "2024-07-09", dealerCode: "62380", dealerName: "YASH AUTOMOTORS" },
+      { registrationNumber: "MH12QR9900", vehicleModel: "TVS NTORQ 125", customerName: "Vikram Pawar", phoneNumber: "9876543218", customerAddress: "Lonavala, Maharashtra", purchaseDate: "2023-12-14", dealerCode: "62380", dealerName: "YASH AUTOMOTORS" },
+      { registrationNumber: "MH12ST1122", vehicleModel: "TVS WEGO 110", customerName: "Neha Jagtap", phoneNumber: "9876543219", customerAddress: "Shirur, Maharashtra", purchaseDate: "2024-03-30", dealerCode: "62380", dealerName: "YASH AUTOMOTORS" }
+    ];
+  }
+
+  function seedMechanics() {
+    return ["Abhishek Swami", "Sumit Bhise", "Advait Salvi", "Kartik Kale"];
+  }
+
+  function seedServiceAdvisors() {
+    return ["Vilas Hire", "Sonu Chavan", "Sidharam Jirole", "Ganesh Pawar"];
+  }
+
+  function seedJobCards() {
+    const jobCards = [
+      { id: "JC-3101", frameNo: "MD626EG52T1C18618", regNo: "MH12AB1234", customer: "Ramesh Patil", model: "TVS Jupiter 110 OBD2E", jobType: "2nd Free Service", status: "Allocated", date: "2026-08-01", mechanic: "Abhishek Swami", vehicleAllocation: "Abhishek Swami", labourTotal: 118, partsTotal: 675 },
+      { id: "JC-3098", frameNo: "MD626BG44G1G21074", regNo: "MH12CD5566", customer: "Sunita Kale", model: "JUPITER", jobType: "Paid Service", status: "Job Completed", date: "2026-07-31", mechanic: "Sumit Bhise", vehicleAllocation: "Sumit Bhise", labourTotal: 250, partsTotal: 1420 },
+      { id: "JC-3090", frameNo: "MD626EG56T1B08784", regNo: "MH12EF7788", customer: "Amit Deshmukh", model: "TVS Jupiter110 DR", jobType: "Running Repair", status: "Closed", date: "2026-07-29", mechanic: "Advait Salvi", vehicleAllocation: "Advait Salvi", labourTotal: 340, partsTotal: 2100 },
+      { id: "JC-3087", frameNo: "MD626EG51S1B12014", regNo: "MH12GH9900", customer: "Priya Shinde", model: "TVS Jupiter110 DR", jobType: "Running Repair", status: "Closed", date: "2026-07-28", mechanic: "Kartik Kale", vehicleAllocation: "Kartik Kale", labourTotal: 180, partsTotal: 560 },
+      { id: "JC-3080", frameNo: "MD626CG58N1F43734", regNo: "MH12IJ2211", customer: "Nikhil Gaikwad", model: "JUPITER ZX DISC SXC", jobType: "Running Repair", status: "Closed", date: "2026-07-26", mechanic: "Abhishek Swami", vehicleAllocation: "Abhishek Swami", labourTotal: 220, partsTotal: 890 },
+      { id: "JC-3075", frameNo: "MD626EG59S1L01488", regNo: "MH12KL3344", customer: "Swapnil More", model: "TVS Jupiter110 DR", jobType: "3rd Free Service", status: "Closed", date: "2026-07-24", mechanic: "Sumit Bhise", vehicleAllocation: "Sumit Bhise", labourTotal: 0, partsTotal: 145 },
+      { id: "JC-3070", frameNo: "MD637AN17S2C02885", regNo: "MH12MN5566", customer: "Rohit Jadhav", model: "TVS RONIN 1CH BASE", jobType: "Running Repair", status: "Closed", date: "2026-07-22", mechanic: "Advait Salvi", vehicleAllocation: "Advait Salvi", labourTotal: 410, partsTotal: 3200 },
+      { id: "JC-3064", frameNo: "MD626EG53R1D10121", regNo: "MH12OP7788", customer: "Sneha Kulkarni", model: "TVS Jupiter 125", jobType: "Free Service", status: "Closed", date: "2026-07-19", mechanic: "Kartik Kale", vehicleAllocation: "Kartik Kale", labourTotal: 120, partsTotal: 430 },
+      { id: "JC-3059", frameNo: "MD637AN19T2C04312", regNo: "MH12QR9900", customer: "Vikram Pawar", model: "TVS NTORQ 125", jobType: "Paid Service", status: "Closed", date: "2026-07-16", mechanic: "Abhishek Swami", vehicleAllocation: "Abhishek Swami", labourTotal: 280, partsTotal: 1170 },
+      { id: "JC-3052", frameNo: "MD626BG48P1H20773", regNo: "MH12ST1122", customer: "Neha Jagtap", model: "TVS WEGO 110", jobType: "Running Repair", status: "Closed", date: "2026-07-12", mechanic: "Sumit Bhise", vehicleAllocation: "Sumit Bhise", labourTotal: 190, partsTotal: 820 }
+    ];
+
+    const receivedTimes = ["10:30", "11:15", "12:00", "09:45", "14:20"];
+    const takingTimes = ["11:30", "12:15", "13:00", "10:45", "15:20"];
+    const deliveryTimes = ["17:30", "18:15", "19:00", "16:45", "20:20"];
+    const serviceAdvisors = seedServiceAdvisors();
+
+    return jobCards.map((jobCard, index) => ({
+      ...jobCard,
+      details: {
+        registrationNumber: jobCard.regNo,
+        vehicleModel: jobCard.model,
+        customerName: jobCard.customer,
+        jobType: jobCard.jobType,
+        receivedDate: jobCard.date,
+        receivedTime: receivedTimes[index % receivedTimes.length],
+        takingDate: jobCard.date,
+        takingTime: takingTimes[index % takingTimes.length],
+        deliveryDate: jobCard.date,
+        deliveryTime: deliveryTimes[index % deliveryTimes.length],
+        vehicleAllocation: jobCard.vehicleAllocation,
+        serviceAdvisor: serviceAdvisors[index % serviceAdvisors.length],
+        vehiclePicked: "Yes",
+        complaints: [{ name: index % 2 ? "Suspension Setting" : "Engine Noise", price: index % 2 ? 150 : 100 }],
+        damages: [index % 2 ? "Scratches" : "Side Fender Dent"]
+      }
+    }));
+  }
+
   function seedData() {
     return {
       session: { dealerCode: "62380", role: "ADMIN", branch: "YASH AUTOMOTORS", userId: "admin", loggedIn: false },
       theme: "light",
+      vehicles: seedVehicles(),
       notifications: [
         { title: "Service reminder due", detail: "18 vehicles due for free service this week", time: "10 min ago" },
         { title: "Low stock alert", detail: "TVS TRU4 Engine Oil 900ML - only 6 left", time: "1 hr ago" },
         { title: "Job card closed", detail: "JC-2131 closed by Sidharam Jirole", time: "3 hrs ago" },
         { title: "New enquiry", detail: "Walk-in enquiry logged for NTORQ 125", time: "5 hrs ago" }
       ],
-      jobCards: [
-        { id: "JC-3101", frameNo: "MD626EG52T1C18618", regNo: "MH12AB1234", customer: "Ramesh Patil", model: "TVS Jupiter 110 OBD2E", jobType: "2nd Free Service", status: "Allocated", date: "2026-08-01", mechanic: "Vilas Hire", labourTotal: 118, partsTotal: 675 },
-        { id: "JC-3098", frameNo: "MD626BG44G1G21074", regNo: "MH12CD5566", customer: "Sunita Kale", model: "JUPITER", jobType: "Paid Service", status: "Job Completed", date: "2026-07-31", mechanic: "Sonu Chavan", labourTotal: 250, partsTotal: 1420 },
-        { id: "JC-3090", frameNo: "MD626EG56T1B08784", regNo: "MH12EF7788", customer: "Amit Deshmukh", model: "TVS Jupiter110 DR", jobType: "Running Repair", status: "Closed", date: "2026-07-29", mechanic: "Sidharam Jirole", labourTotal: 340, partsTotal: 2100 },
-        { id: "JC-3087", frameNo: "MD626EG51S1B12014", regNo: "MH12GH9900", customer: "Priya Shinde", model: "TVS Jupiter110 DR", jobType: "Running Repair", status: "Closed", date: "2026-07-28", mechanic: "Vilas Hire", labourTotal: 180, partsTotal: 560 },
-        { id: "JC-3080", frameNo: "MD626CG58N1F43734", regNo: "MH12IJ2211", customer: "Nikhil Gaikwad", model: "JUPITER ZX DISC SXC", jobType: "Running Repair", status: "Closed", date: "2026-07-26", mechanic: "Sonu Chavan", labourTotal: 220, partsTotal: 890 },
-        { id: "JC-3075", frameNo: "MD626EG59S1L01488", regNo: "MH12KL3344", customer: "Swapnil More", model: "TVS Jupiter110 DR", jobType: "3rd Free Service", status: "Closed", date: "2026-07-24", mechanic: "Vilas Hire", labourTotal: 0, partsTotal: 145 },
-        { id: "JC-3070", frameNo: "MD637AN17S2C02885", regNo: "MH12MN5566", customer: "Rohit Jadhav", model: "TVS RONIN 1CH BASE", jobType: "Running Repair", status: "Closed", date: "2026-07-22", mechanic: "Sidharam Jirole", labourTotal: 410, partsTotal: 3200 }
-      ],
+      jobCards: seedJobCards(),
       parts: {
         "NTORQ 125": ["Battery & Battery Box Assembly", "Frame Assembly", "Side Panel LH RH Assembly", "Front Wheel Assembly", "Rear Wheel Assembly", "Handle Assembly"],
         "JUPITER 125": ["Rear Wheel Assembly", "Front Wheel Assembly", "Engine Assembly", "Frame Assembly", "Seat Assembly"],
@@ -41,7 +98,8 @@ const DMS = (() => {
         { ref: "10", part: "K3110690", name: "SPRING BRAKE CABLE REAR", ndp: 6.74, mrp: 10, moq: 40, remark: "DISC" },
         { ref: "11", part: "K6110840", name: "BRAKE CAM REAR - WEGO", ndp: 77.50, mrp: 115, moq: 3, remark: "" }
       ],
-      mechanics: ["Vilas Hire", "Sonu Chavan", "Sidharam Jirole", "Ganesh Pawar"],
+      mechanics: seedMechanics(),
+      serviceAdvisors: seedServiceAdvisors(),
       cart: []
     };
   }
@@ -53,7 +111,101 @@ const DMS = (() => {
       localStorage.setItem(LS_KEY, JSON.stringify(seed));
       return seed;
     }
-    try { return JSON.parse(raw); } catch (e) { const seed = seedData(); localStorage.setItem(LS_KEY, JSON.stringify(seed)); return seed; }
+    try {
+      const data = JSON.parse(raw);
+      const seededVehicles = seedVehicles();
+      const seededJobCards = seedJobCards();
+      const seededMechanics = seedMechanics();
+      const seededServiceAdvisors = seedServiceAdvisors();
+      let changed = false;
+      const hasValue = value => value !== "" && value !== null && value !== undefined && (!Array.isArray(value) || value.length > 0);
+      if (!Array.isArray(data.vehicles) || data.vehicles.length === 0) {
+        data.vehicles = seededVehicles;
+        changed = true;
+      } else {
+        seededVehicles.forEach(seed => {
+          const existing = data.vehicles.find(vehicle =>
+            String(vehicle.registrationNumber || "").toLowerCase() === seed.registrationNumber.toLowerCase()
+          );
+          if (!existing) {
+            if (data.vehicles.length >= seededVehicles.length) return;
+            data.vehicles.push(seed);
+            changed = true;
+            return;
+          }
+          ["vehicleModel", "customerName", "phoneNumber", "customerAddress", "purchaseDate", "dealerCode", "dealerName"].forEach(field => {
+            if (!existing[field]) {
+              existing[field] = seed[field] || (field === "dealerCode" ? data.session?.dealerCode : field === "dealerName" ? data.session?.branch : "");
+              changed = true;
+            }
+          });
+        });
+      }
+      if (!Array.isArray(data.jobCards)) {
+        data.jobCards = seededJobCards;
+        changed = true;
+      } else {
+        seededJobCards.forEach(seed => {
+          const existing = data.jobCards.find(jobCard => jobCard.id === seed.id);
+          if (!existing && data.jobCards.length < seededJobCards.length) {
+            data.jobCards.push(seed);
+            changed = true;
+            return;
+          }
+          if (!existing) return;
+
+          const details = (existing.details && typeof existing.details === "object") ? existing.details : {};
+          Object.entries(seed.details || {}).forEach(([field, value]) => {
+            if (!hasValue(details[field]) && !hasValue(existing[field])) {
+              details[field] = value;
+              changed = true;
+            }
+          });
+          if (existing.details !== details) {
+            existing.details = details;
+          }
+        });
+      }
+      const dealerCode = data.session?.dealerCode || "62380";
+      const dealerName = data.session?.branch || "YASH AUTOMOTORS";
+      data.vehicles.forEach(vehicle => {
+        if (!vehicle.dealerCode) {
+          vehicle.dealerCode = dealerCode;
+          changed = true;
+        }
+        if (!vehicle.dealerName) {
+          vehicle.dealerName = dealerName;
+          changed = true;
+        }
+      });
+      if (!Array.isArray(data.mechanics) || JSON.stringify(data.mechanics) !== JSON.stringify(seededMechanics)) {
+        data.mechanics = seededMechanics;
+        changed = true;
+      }
+      if (!Array.isArray(data.serviceAdvisors) || data.serviceAdvisors.length === 0) {
+        data.serviceAdvisors = seededServiceAdvisors;
+        changed = true;
+      }
+      (data.jobCards || []).forEach((jobCard, index) => {
+        const existingMechanic = jobCard.details?.vehicleAllocation || jobCard.vehicleAllocation || jobCard.mechanic;
+        if (!seededMechanics.includes(existingMechanic)) {
+          const assignedMechanic = seededMechanics[index % seededMechanics.length];
+          jobCard.mechanic = assignedMechanic;
+          jobCard.vehicleAllocation = assignedMechanic;
+          changed = true;
+        } else if (jobCard.vehicleAllocation !== existingMechanic || jobCard.mechanic !== existingMechanic) {
+          jobCard.mechanic = existingMechanic;
+          jobCard.vehicleAllocation = existingMechanic;
+          changed = true;
+        }
+      });
+      if (changed) save(data);
+      return data;
+    } catch (e) {
+      const seed = seedData();
+      localStorage.setItem(LS_KEY, JSON.stringify(seed));
+      return seed;
+    }
   }
 
   function save(data) { localStorage.setItem(LS_KEY, JSON.stringify(data)); }
@@ -67,7 +219,26 @@ const DMS = (() => {
     return data;
   }
 
-  return { get, update, seedData };
+  function upsertVehicle(data, vehicle) {
+    if (!Array.isArray(data.vehicles)) data.vehicles = [];
+
+    const registrationNumber = String(vehicle.registrationNumber || "").trim();
+    if (!registrationNumber) return null;
+
+    const existing = data.vehicles.find(item =>
+      String(item.registrationNumber || "").trim().toLowerCase() === registrationNumber.toLowerCase()
+    );
+    if (existing) {
+      Object.assign(existing, vehicle, { registrationNumber });
+      return existing;
+    }
+
+    const newVehicle = { ...vehicle, registrationNumber };
+    data.vehicles.push(newVehicle);
+    return newVehicle;
+  }
+
+  return { get, update, seedData, seedVehicles, seedJobCards, seedMechanics, seedServiceAdvisors, upsertVehicle };
 })();
 
 /* ---------- Theme ---------- */
