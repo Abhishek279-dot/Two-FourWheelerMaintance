@@ -26,6 +26,16 @@ const DMS = (() => {
     return ["Vilas Hire", "Sonu Chavan", "Sidharam Jirole", "Ganesh Pawar"];
   }
 
+  function seedInventory() {
+    return [
+      { id: "INV-001", image: "", partName: "Brake Pad", partCode: "BP-101", category: "Braking", compatibleWith: "All Models", quantity: 25, minStock: 10, price: 450, status: "In Stock" },
+      { id: "INV-002", image: "", partName: "Engine Oil 1L", partCode: "EO-103", category: "Lubricants", compatibleWith: "All Models", quantity: 40, minStock: 15, price: 350, status: "In Stock" },
+      { id: "INV-003", image: "", partName: "Air Filter", partCode: "AF-102", category: "Filters", compatibleWith: "Jupiter, Ntorq", quantity: 8, minStock: 10, price: 220, status: "Low Stock" },
+      { id: "INV-004", image: "", partName: "Drive Belt", partCode: "DB-105", category: "Transmission", compatibleWith: "Ntorq, Raider", quantity: 5, minStock: 10, price: 600, status: "Low Stock" },
+      { id: "INV-005", image: "", partName: "Rear Mirror", partCode: "RM-104", category: "Body Parts", compatibleWith: "All Models", quantity: 18, minStock: 5, price: 320, status: "In Stock" }
+    ];
+  }
+
   function seedJobCards() {
     const jobCards = [
       { id: "JC-3101", frameNo: "MD626EG52T1C18618", regNo: "MH12AB1234", customer: "Ramesh Patil", model: "TVS Jupiter 110 OBD2E", jobType: "2nd Free Service", status: "Allocated", date: "2026-08-01", mechanic: "Abhishek Swami", vehicleAllocation: "Abhishek Swami", labourTotal: 118, partsTotal: 675 },
@@ -79,6 +89,7 @@ const DMS = (() => {
         { title: "New enquiry", detail: "Walk-in enquiry logged for NTORQ 125", time: "5 hrs ago" }
       ],
       jobCards: seedJobCards(),
+      inventory: seedInventory(),
       parts: {
         "NTORQ 125": ["Battery & Battery Box Assembly", "Frame Assembly", "Side Panel LH RH Assembly", "Front Wheel Assembly", "Rear Wheel Assembly", "Handle Assembly"],
         "JUPITER 125": ["Rear Wheel Assembly", "Front Wheel Assembly", "Engine Assembly", "Frame Assembly", "Seat Assembly"],
@@ -186,6 +197,10 @@ const DMS = (() => {
         data.serviceAdvisors = seededServiceAdvisors;
         changed = true;
       }
+      if (!Array.isArray(data.inventory)) {
+        data.inventory = seedInventory();
+        changed = true;
+      }
       (data.jobCards || []).forEach((jobCard, index) => {
         const existingMechanic = jobCard.details?.vehicleAllocation || jobCard.vehicleAllocation || jobCard.mechanic;
         if (!seededMechanics.includes(existingMechanic)) {
@@ -238,7 +253,7 @@ const DMS = (() => {
     return newVehicle;
   }
 
-  return { get, update, seedData, seedVehicles, seedJobCards, seedMechanics, seedServiceAdvisors, upsertVehicle };
+  return { get, update, seedData, seedVehicles, seedJobCards, seedMechanics, seedServiceAdvisors, seedInventory, upsertVehicle };
 })();
 
 /* ---------- Theme ---------- */

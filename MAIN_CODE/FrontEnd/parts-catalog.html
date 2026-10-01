@@ -34,16 +34,12 @@
       <div>
         <span class="eyebrow">PARTS WORKSHOP</span>
         <h1>Parts E-Catalog</h1>
-        <p>Choose a vehicle model and add its image to the catalog.</p>
       </div>
     </header>
 
     <section class="catalog-hero" aria-label="Selected vehicle overview">
       <div class="hero-copy">
-        <span class="eyebrow">SELECTED MODEL</span>
         <h2 id="modelTitle">NTORQ 125</h2>
-        <p id="modelDescription">Explore assemblies, diagrams and compatible replacement parts.</p>
-        <div class="hero-meta"><span><i class="fa-solid fa-circle-check"></i> Genuine parts</span><span><i class="fa-solid fa-screwdriver-wrench"></i> Workshop ready</span></div>
       </div>
       <div class="vehicle-visual" id="vehicleVisual" aria-label="Vehicle image placeholder">
         <img src="tvsJ110.png" alt="TvsJupiter110">
@@ -54,27 +50,16 @@
   <script src="app.js"></script>
   <script>
     const data = DMS.get();
-    const models = ["NTORQ 125", "JUPITER 110", "IQUBE", "WEGO 110", "JUPITER 125", "JUPITER 110 - 2024", "NTORQ 150", "ORBITER"];
+    const models = ["JUPITER 110", "NTORQ 125", "APACHE RTX", "ZEST", "JUPITER 125", "NTORQ 150", "ORBITER"];
     // Add each vehicle image path or URL here. Empty values keep the placeholder visible.
     const modelImages = {
-      "NTORQ 125": "",
-      "JUPITER 110": "",
-      "IQUBE": "",
-      "WEGO 110": "",
-      "JUPITER 125": "",
-      "JUPITER 110 - 2024": "tvsJ110.png",
-      "NTORQ 150": "",
-      "ORBITER": ""
-    };
-    const modelDescriptions = {
-      "NTORQ 125": "Performance scooter assemblies and service parts.",
-      "JUPITER 110": "Everyday scooter assemblies for dependable service.",
-      "IQUBE": "Electric scooter components and battery assemblies.",
-      "WEGO 110": "Compact scooter parts for routine workshop service.",
-      "JUPITER 125": "Premium scooter assemblies and replacement parts.",
-      "JUPITER 110 - 2024": "2024 model-specific parts and assemblies.",
-      "NTORQ 150": "Performance scooter parts and workshop references.",
-      "ORBITER": "Electric scooter assemblies and genuine parts."
+      "NTORQ 125": "ntorqe125.png",
+      "JUPITER 110": "tvsJ110.png",
+      "APACHE RTX": "RTX1.png",
+      "ZEST": "ZEST.png",
+      "JUPITER 125": "JUPITER125.png",
+      "NTORQ 150": "ntorqe150.png",
+      "ORBITER": "orbiter.png"
     };
     const modelStrip = document.getElementById("modelStrip");
     const session = data.session || {};
@@ -96,8 +81,13 @@
     }
 
     function renderModel() {
-      document.getElementById("modelTitle").textContent = selectedModel;
-      document.getElementById("modelDescription").textContent = modelDescriptions[selectedModel];
+      const stackedParts = selectedModel.match(/^(.+?)\s+(RTX|\d+)$/);
+      const titleMain = stackedParts ? stackedParts[1] : selectedModel;
+      const titleSub = stackedParts ? stackedParts[2] : "";
+      const title = document.getElementById("modelTitle");
+      title.classList.toggle("stacked-model-title", Boolean(stackedParts));
+      title.classList.toggle("jupiter-title", selectedModel === "JUPITER 110");
+      title.innerHTML = `<span class="model-title-main">${escapeHtml(titleMain)}</span>${titleSub ? `<span class="model-title-sub">${escapeHtml(titleSub)}</span>` : ""}`;
       const imageUrl = modelImages[selectedModel];
       document.getElementById("vehicleVisual").innerHTML = imageUrl
         ? `<img class="model-image" src="${escapeHtml(imageUrl)}" alt="${escapeHtml(selectedModel)}">`

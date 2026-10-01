@@ -15,7 +15,7 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
   console.log(branch)
 
   // Abhi ke liye dummy check (baad me backend API se replace hoga)
-  if (userId === "admin" && password === "admin123") {
+  if (userId === " admin" && password === "admin123") {
     localStorage.setItem("userRole",role); 
     localStorage.setItem("userBranch",branch); 
     window.location.href = "HomePage.html";   // redirect

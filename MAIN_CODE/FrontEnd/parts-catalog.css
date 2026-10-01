@@ -40,6 +40,7 @@ button { cursor: pointer; }
 .catalog-page { width: min(1440px, calc(100% - 48px)); margin: 0 auto; padding: 30px 0 100px; }
 .catalog-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 22px; }
 .eyebrow { display: block; margin-bottom: 6px; color: var(--orange); font-size: 10px; font-weight: 800; letter-spacing: .15em; }
+.catalog-heading .eyebrow { font-size: 12px; }
 h1, h2, p { margin-top: 0; }
 h1 { margin-bottom: 5px; color: var(--navy); font-size: clamp(26px, 3vw, 38px); letter-spacing: -.04em; }
 h2 { margin-bottom: 4px; color: var(--navy); font-size: 21px; }
@@ -49,10 +50,11 @@ h2 { margin-bottom: 4px; color: var(--navy); font-size: 21px; }
 
 .catalog-hero { display: grid; grid-template-columns: minmax(250px, .7fr) minmax(0, 1.8fr); align-items: center; overflow: hidden; min-height: 285px; margin-bottom: 22px; border: 1px solid #c9d8e4; border-radius: 16px; background: linear-gradient(110deg, #f9fcff 0%, #e9f2fa 52%, #dcebf5 100%); box-shadow: 0 12px 28px rgba(23, 55, 82, .1); }
 .hero-copy { position: relative; z-index: 1; padding: 34px; }
-.hero-copy h2 { font-size: clamp(25px, 3vw, 40px); }
-.hero-copy p { max-width: 285px; color: var(--muted); font-size: 13px; line-height: 1.6; }
-.hero-meta { display: flex; flex-wrap: wrap; gap: 9px 16px; color: var(--steel); font-size: 11px; font-weight: 800; }
-.hero-meta i { margin-right: 4px; color: #12975c; }
+.hero-copy h2 { display: flex; flex-direction: column; gap: 3px; margin: 0; color: var(--navy); font-family: "Avenir Next", "Segoe UI", sans-serif; font-size: clamp(32px, 4vw, 52px); font-weight: 900; letter-spacing: -.055em; line-height: .98; text-transform: uppercase; }
+.hero-copy h2.jupiter-title { font-size: clamp(38px, 5.2vw, 68px); }
+.model-title-main { display: block; }
+.stacked-model-title .model-title-main { white-space: nowrap; }
+.model-title-sub { display: block; color: var(--orange); font-size: .52em; font-weight: 800; letter-spacing: .12em; line-height: 1.25; }
 .vehicle-visual { align-self: stretch; min-height: 285px; padding: 24px 25px 24px 0; }
 .image-placeholder { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 9px; width: 100%; height: 100%; min-height: 235px; border: 2px dashed #9bb9c9; border-radius: 14px; color: #668392; background: rgba(255,255,255,.48); text-align: center; }
 .image-placeholder i { color: #6f9bb0; font-size: 40px; }
