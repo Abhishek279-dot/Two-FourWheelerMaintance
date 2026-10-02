@@ -31,7 +31,7 @@
 
   function imageMarkup(item) {
     if (!item.image) return '<span class="part-image"><i class="fa-regular fa-image"></i></span>';
-    return `<span class="part-image"><img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.partName)}"></span>`;
+    return `<button class="part-image image-button" data-action="preview-image" data-id="${escapeHtml(item.id)}" type="button" aria-label="View ${escapeHtml(item.partName)} image"><img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.partName)}"></button>`;
   }
 
   function bindImageErrors() {
@@ -97,10 +97,9 @@
       <td>${escapeHtml(item.category)}</td>
       <td>${escapeHtml(item.compatibleWith)}</td>
       <td class="number-cell">${Number(item.quantity || 0)}</td>
-      <td class="number-cell">${Number(item.minStock || 0)}</td>
-      <td class="number-cell">${formatCurrency(item.price)}</td>
-      <td><span class="status-pill ${statusClass(item.status)}">${escapeHtml(item.status)}</span></td>
-      <td><div class="actions"><button class="action-button edit" data-action="edit" data-id="${escapeHtml(item.id)}" type="button" title="Edit part"><i class="fa-solid fa-pen-to-square"></i></button><button class="action-button copy" data-action="copy" data-id="${escapeHtml(item.id)}" type="button" title="Duplicate part"><i class="fa-regular fa-copy"></i></button><button class="action-button delete" data-action="delete" data-id="${escapeHtml(item.id)}" type="button" title="Delete part"><i class="fa-solid fa-trash-can"></i></button></div></td>
+       <td class="number-cell">${formatCurrency(item.price)}</td>
+       <td><span class="status-pill ${statusClass(item.status)}">${escapeHtml(item.status)}</span></td>
+       <td><div class="actions"><button class="action-button edit" data-action="edit" data-id="${escapeHtml(item.id)}" type="button" title="Edit part"><i class="fa-solid fa-pen-to-square"></i></button><button class="action-button delete" data-action="delete" data-id="${escapeHtml(item.id)}" type="button" title="Delete part"><i class="fa-solid fa-trash-can"></i></button></div></td>
     </tr>`).join("");
     $("emptyState").hidden = visibleItems.length > 0;
     const end = Math.min(start + visibleItems.length, items.length);
@@ -130,6 +129,20 @@
     document.body.style.overflow = "";
   }
 
+  function openImageModal(item) {
+    $("imageModalTitle").textContent = item.partName || "Image Preview";
+    $("largeImagePreview").src = item.image;
+    $("largeImagePreview").alt = item.partName || "Part image";
+    $("imageModal").hidden = false;
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeImageModal() {
+    $("imageModal").hidden = true;
+    document.body.style.overflow = "";
+    $("largeImagePreview").removeAttribute("src");
+  }
+
   function updatePreview() {
     const url = $("image").value.trim();
     $("imagePreview").innerHTML = url ? `<img src="${escapeHtml(url)}" alt="Part preview">` : '<i class="fa-regular fa-image"></i><small>No image link added</small>';
@@ -150,10 +163,7 @@
     const item = state.items.find(entry => entry.id === button.dataset.id);
     if (!item) return;
     if (button.dataset.action === "edit") openModal(item);
-    if (button.dataset.action === "copy") {
-      const copy = { ...item, id: `INV-${Date.now()}`, partCode: `${item.partCode}-COPY`, partName: `${item.partName} Copy` };
-      state.items.push(copy); save(); render(); showToast("Part duplicated");
-    }
+    if (button.dataset.action === "preview-image") openImageModal(item);
     if (button.dataset.action === "delete" && window.confirm(`Delete ${item.partName}?`)) {
       state.items = state.items.filter(entry => entry.id !== item.id); save(); render(); showToast("Part deleted");
     }
@@ -172,14 +182,20 @@
   $("addPartButton").addEventListener("click", () => openModal());
   $("closeModal").addEventListener("click", closeModal);
   $("cancelModal").addEventListener("click", closeModal);
+  $("closeImageModal").addEventListener("click", closeImageModal);
   $("partModal").addEventListener("click", event => { if (event.target === $("partModal")) closeModal(); });
+  $("imageModal").addEventListener("click", event => { if (event.target === $("imageModal")) closeImageModal(); });
   $("image").addEventListener("input", updatePreview);
   $("searchInput").addEventListener("input", event => { state.query = event.target.value.trim(); state.page = 1; render(); });
   $("categoryFilter").addEventListener("change", event => { state.category = event.target.value; state.page = 1; render(); });
   $("statusFilter").addEventListener("change", event => { state.status = event.target.value; state.page = 1; render(); });
   $("pageSize").addEventListener("change", event => { state.pageSize = Number(event.target.value); state.page = 1; render(); });
   $("filterButton").addEventListener("click", () => { $("categoryFilter").focus(); $("filterButton").classList.toggle("active"); });
-  document.addEventListener("keydown", event => { if (event.key === "Escape" && !$("partModal").hidden) closeModal(); });
+  document.addEventListener("keydown", event => {
+    if (event.key !== "Escape") return;
+    if (!$("imageModal").hidden) closeImageModal();
+    else if (!$("partModal").hidden) closeModal();
+  });
 
   const session = data.session || {};
   $("userRole").textContent = localStorage.getItem("userRole") || session.role || "Admin";
