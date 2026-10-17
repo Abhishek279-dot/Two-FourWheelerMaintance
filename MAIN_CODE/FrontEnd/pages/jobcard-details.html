@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Card Details - SV Motors</title>
+  <link rel="stylesheet" href="../css/jobcard-details.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <main class="details-page" id="detailsPage"></main>
+
+  <script src="../js/app.js"></script>
+  <script src="../js/jobcard-api.js"></script>
+  <script>
+    const detailsPage = document.getElementById("detailsPage");
+    const jobCardId = new URLSearchParams(window.location.search).get("id");
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function valueOrDash(value) {
+      return value ? escapeHtml(value) : '<span class="empty-value">Not provided</span>';
+    }
+
+    function detailItem(label, value, wide = false) {
+      return `<div class="detail-item${wide ? " wide" : ""}"><span>${label}</span><strong>${valueOrDash(value)}</strong></div>`;
+    }
+
+    function renderDetails(jobCard, vehicle) {
+      if (!jobCard) {
+        detailsPage.innerHTML = `
+          <a class="back-link" href="jobcard-list.html" aria-label="Back to JC Catalog">
+            <i class="fa-solid fa-arrow-left"></i>
+          </a>
+          <div class="missing-state">Job card details could not be found.</div>`;
+        document.title = "Job Card Not Found - SV Motors";
+        return;
+      }
+
+      // Older records stored form fields on the job card itself. New records use details.
+      const service = { ...jobCard };
+      Object.entries(jobCard.details || {}).forEach(([key, value]) => {
+        if (value !== "" && value !== null && value !== undefined && (!Array.isArray(value) || value.length)) {
+          service[key] = value;
+        }
+      });
+      const customerName = service.customer || service.customerName || vehicle.customerName;
+      const vehicleModel = service.model || service.vehicleModel || vehicle.vehicleModel;
+      const phone = service.phoneNumber || vehicle.phoneNumber;
+      const address = service.customerAddress || vehicle.customerAddress;
+      const purchaseDate = service.purchaseDate || vehicle.purchaseDate;
+      const complaints = Array.isArray(service.complaints)
+        ? service.complaints.map(item => typeof item === "string" ? { name: item, price: 0 } : item)
+        : [];
+      const damages = Array.isArray(service.damages) ? service.damages : [];
+      const isCancelled = jobCard.status === "Cancelled";
+
+      detailsPage.innerHTML = `
+        <header class="details-header">
+          <div>
+            <a class="back-link" href="jobcard-list.html" aria-label="Back to JC Catalog">
+              <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <span class="eyebrow">SERVICE WORKSHOP</span>
+            <h1>${escapeHtml(jobCard.id)}</h1>
+            <p class="subtitle">Complete service record and customer information</p>
+          </div>
+          <span class="status-badge${isCancelled ? " cancelled" : ""}">${escapeHtml(jobCard.status || "Job Created")}</span>
+        </header>
+
+        <section class="details-card">
+          <h2>Job Card Details</h2>
+          <div class="details-grid">
+            ${detailItem("Job Card Number", jobCard.id)}
+            ${detailItem("Job Card Date", service.date)}
+            ${detailItem("Job Type", service.jobType)}
+            ${detailItem("Vehicle Allocation", service.vehicleAllocation || service.mechanic)}
+            ${detailItem("Service Advisor", service.serviceAdvisor)}
+            ${detailItem("Vehicle Picked", service.vehiclePicked)}
+            ${detailItem("Frame Number", service.frameNo)}
+          </div>
+        </section>
+
+        <section class="details-card">
+          <h2>Vehicle Details</h2>
+          <div class="details-grid">
+            ${detailItem("Registration Number", service.regNo || service.registrationNumber || vehicle.registrationNumber)}
+            ${detailItem("Vehicle Model", vehicleModel)}
+            ${detailItem("Date of Purchase", purchaseDate)}
+          </div>
+        </section>
+
+        <section class="details-card">
+          <h2>Customer Details</h2>
+          <div class="details-grid">
+            ${detailItem("Customer Name", customerName)}
+            ${detailItem("Phone Number", phone)}
+            ${detailItem("Address", address, true)}
+          </div>
+        </section>
+
+        <section class="details-card">
+          <h2>Service Details</h2>
+          <div class="details-grid">
+            ${detailItem("Received Date", service.receivedDate || service.date)}
+            ${detailItem("Received Time", service.receivedTime)}
+            ${detailItem("Taking Date", service.takingDate)}
+            ${detailItem("Taking Time", service.takingTime)}
+            ${detailItem("Delivery Date", service.deliveryDate)}
+            ${detailItem("Delivery Time", service.deliveryTime)}
+          </div>
+          <h2 style="margin-top:24px;">Complaints</h2>
+          ${complaints.length ? `<ul class="list">${complaints.map(item => `<li><span>${escapeHtml(item.name || item.text)}</span><strong>INR ${Number(item.price || 0).toLocaleString("en-IN")}</strong></li>`).join("")}</ul>` : '<span class="empty-value">No complaints recorded</span>'}
+          <h2 style="margin-top:24px;">Damage Description</h2>
+          ${damages.length ? `<ul class="list">${damages.map(item => `<li><span>${escapeHtml(item)}</span></li>`).join("")}</ul>` : '<span class="empty-value">No damage recorded</span>'}
+        </section>`;
+    }
+
+    async function initializeDetails() {
+      const data = DMS.get();
+      let jobCard;
+      let vehicle;
+      try {
+        const result = await JobCardAPI.getJobCard(jobCardId);
+        jobCard = result.item;
+        vehicle = {
+          registrationNumber: jobCard.registrationNumber || jobCard.regNo,
+          vehicleModel: jobCard.vehicleModel || jobCard.model,
+          customerName: jobCard.customerName || jobCard.customer,
+          phoneNumber: jobCard.phoneNumber,
+          customerAddress: jobCard.customerAddress,
+          purchaseDate: jobCard.purchaseDate
+        };
+      } catch (error) {
+        if (error.status === 401) {
+          window.location.href = "LoginPage.html";
+          return;
+        }
+        jobCard = (data.jobCards || []).find(item => item.id === jobCardId || item.jobCardNo === jobCardId);
+        vehicle = (data.vehicles || []).find(item =>
+          String(item.registrationNumber || "").toLowerCase() === String(jobCard?.regNo || "").toLowerCase()
+        ) || {};
+      }
+      renderDetails(jobCard, vehicle || {});
+    }
+
+    initializeDetails();
+  </script>
+</body>
+</html>

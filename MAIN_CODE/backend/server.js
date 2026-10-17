@@ -1,17 +1,20 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const pool = require("./db");
 
 const app = express();
 const PORT = Number(process.env.PORT || 5000);
+const FRONTEND_DIR = path.resolve(__dirname, "..", "FrontEnd");
 
 // Middleware
 app.use(cors());              // frontend ko backend se baat karne dega
 app.use(express.json());      // JSON data ko samajhne ke liye
+app.use(express.static(FRONTEND_DIR));
 
-// Test route
+// Redirect to the login page so relative page links resolve from /pages/.
 app.get("/", (req, res) => {
-  res.send("Backend server chal raha hai!");
+  res.redirect("/pages/LoginPage.html");
 });
 
 app.get("/api/health", async (req, res) => {

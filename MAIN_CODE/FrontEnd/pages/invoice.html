@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice - SV Motors</title>
+  <link rel="stylesheet" href="../css/jobcard-catalog.css">
+  <link rel="stylesheet" href="../css/invoice.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <header class="site-navbar">
+    <div class="navbar-brand">
+      <div class="navbar-mark"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+      <div>
+        <p>SV Motors</p>
+        <span>VEHICLE MAINTENANCE SYSTEM</span>
+      </div>
+    </div>
+    <div class="navbar-account">
+      <div>
+        <span>SIGNED IN AS</span>
+        <strong id="userRole">Admin</strong>
+        <small id="userBranch">Swami Service Center</small>
+      </div>
+      <div class="navbar-profile"><i class="fa-solid fa-user"></i></div>
+    </div>
+  </header>
+
+  <main class="catalog-page">
+    <header class="catalog-header">
+      <div class="catalog-title">
+        <a class="back-link" href="HomePage.html" aria-label="Back to home">
+          <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <div>
+          <span class="eyebrow">PAYMENT HISTORY</span>
+          <h1>Invoice</h1>
+          <p>Create invoices from vehicle job card records.</p>
+        </div>
+      </div>
+    </header>
+
+    <section class="catalog-card" aria-label="Invoice payment history">
+      <div class="catalog-toolbar">
+        <div>
+          <h2>Job Card Records</h2>
+          <span id="recordCount">0 records</span>
+        </div>
+        <label class="catalog-search">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input id="catalogSearch" type="search" placeholder="Search job card, vehicle, customer or model" autocomplete="off">
+        </label>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Sr. No.</th>
+              <th>JC No.</th>
+              <th>Vehicle No.</th>
+              <th>Customer Name</th>
+              <th>Date</th>
+              <th>Phone No.</th>
+              <th>Model</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="catalogBody"></tbody>
+        </table>
+      </div>
+      <div class="empty-state" id="emptyState" hidden>No job cards match your search.</div>
+    </section>
+  </main>
+
+  <script src="../js/app.js"></script>
+  <script src="../js/invoice.js"></script>
+</body>
+</html>

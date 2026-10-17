@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parts E-Catalog - SV Motors</title>
+  <link rel="stylesheet" href="../css/parts-catalog.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <header class="site-navbar">
+    <div class="navbar-brand">
+      <a class="back-link" href="HomePage.html" aria-label="Back to home"><i class="fa-solid fa-arrow-left"></i></a>
+      <div class="navbar-mark"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+      <div>
+        <p>SV Motors</p>
+        <span>VEHICLE MAINTENANCE SYSTEM</span>
+      </div>
+    </div>
+    <div class="navbar-account">
+      <div>
+        <span>SIGNED IN AS</span>
+        <strong id="userRole">Admin</strong>
+        <small id="userBranch">Swami Service Center</small>
+      </div>
+      <div class="navbar-profile"><i class="fa-solid fa-user"></i></div>
+    </div>
+  </header>
+
+  <nav class="parts-model-strip" id="modelStrip" aria-label="Vehicle models"></nav>
+
+  <main class="catalog-page">
+    <header class="catalog-heading">
+      <div>
+        <span class="eyebrow">PARTS WORKSHOP</span>
+        <h1>Parts E-Catalog</h1>
+      </div>
+    </header>
+
+    <section class="catalog-hero" aria-label="Selected vehicle overview">
+      <div class="hero-copy">
+        <h2 id="modelTitle">NTORQ 125</h2>
+      </div>
+      <div class="vehicle-visual" id="vehicleVisual" aria-label="Vehicle image placeholder">
+        <img src="../Images/vehicle/tvsJ110.png" alt="TvsJupiter110">
+      </div>
+    </section>
+  </main>
+
+  <script src="../js/app.js"></script>
+  <script>
+    const data = DMS.get();
+    const models = ["JUPITER 110", "NTORQ 125", "APACHE RTX", "ZEST", "JUPITER 125", "NTORQ 150", "ORBITER"];
+    // Add each vehicle image path or URL here. Empty values keep the placeholder visible.
+    const modelImages = {
+      "NTORQ 125": "../Images/vehicle/ntorqe125.png",
+      "JUPITER 110": "../Images/vehicle/tvsJ110.png",
+      "APACHE RTX": "../Images/vehicle/RTX1.png",
+      "ZEST": "../Images/vehicle/ZEST.png",
+      "JUPITER 125": "../Images/vehicle/JUPITER125.png",
+      "NTORQ 150": "../Images/vehicle/ntorqe150.png",
+      "ORBITER": "../Images/vehicle/orbiter.png"
+    };
+    const modelStrip = document.getElementById("modelStrip");
+    const session = data.session || {};
+    let selectedModel = models[0];
+
+    document.getElementById("userRole").textContent = localStorage.getItem("userRole") || session.role || "Admin";
+    document.getElementById("userBranch").textContent = localStorage.getItem("userBranch") || session.branch || "Swami Service Center";
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    function renderModelStrip() {
+      modelStrip.innerHTML = models.map(model => `<button class="model-tab${model === selectedModel ? " active" : ""}" type="button" data-model="${escapeHtml(model)}">${escapeHtml(model)}</button>`).join("");
+      modelStrip.querySelectorAll("[data-model]").forEach(button => button.addEventListener("click", () => {
+        selectedModel = button.dataset.model;
+        renderModel();
+      }));
+    }
+
+    function renderModel() {
+      const stackedParts = selectedModel.match(/^(.+?)\s+(RTX|\d+)$/);
+      const titleMain = stackedParts ? stackedParts[1] : selectedModel;
+      const titleSub = stackedParts ? stackedParts[2] : "";
+      const title = document.getElementById("modelTitle");
+      title.classList.toggle("stacked-model-title", Boolean(stackedParts));
+      title.classList.toggle("jupiter-title", selectedModel === "JUPITER 110");
+      title.innerHTML = `<span class="model-title-main">${escapeHtml(titleMain)}</span>${titleSub ? `<span class="model-title-sub">${escapeHtml(titleSub)}</span>` : ""}`;
+      const imageUrl = modelImages[selectedModel];
+      document.getElementById("vehicleVisual").innerHTML = imageUrl
+        ? `<img class="model-image" src="${escapeHtml(imageUrl)}" alt="${escapeHtml(selectedModel)}">`
+        : `<div class="image-placeholder"><i class="fa-regular fa-image"></i><strong>${escapeHtml(selectedModel)} image placeholder</strong><span>Add your vehicle image here</span></div>`;
+      renderModelStrip();
+    }
+
+    renderModel();
+  </script>
+</body>
+</html>

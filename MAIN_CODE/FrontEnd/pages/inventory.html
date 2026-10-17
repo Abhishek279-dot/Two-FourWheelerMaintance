@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory - SV Motors</title>
+  <link rel="stylesheet" href="../css/inventory.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <header class="site-navbar">
+    <div class="navbar-brand">
+      <a class="back-link" href="HomePage.html" aria-label="Back to home"><i class="fa-solid fa-arrow-left"></i></a>
+      <div class="navbar-mark"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+      <div>
+        <p>SV Motors</p>
+        <span>VEHICLE MAINTENANCE SYSTEM</span>
+      </div>
+    </div>
+    <div class="navbar-account">
+      <div>
+        <span>SIGNED IN AS</span>
+        <strong id="userRole">Admin</strong>
+        <small id="userBranch">Swami Service Center</small>
+      </div>
+      <div class="navbar-profile"><i class="fa-solid fa-user"></i></div>
+    </div>
+  </header>
+
+  <main class="inventory-page">
+    <div class="page-heading">
+      <div>
+        <a class="breadcrumb" href="HomePage.html"><i class="fa-solid fa-arrow-left"></i> Back to modules</a>
+        <span class="eyebrow">STOCK CONTROL</span>
+        <h1>Inventory</h1>
+        <p>Manage parts, pricing and stock levels for your service centre.</p>
+      </div>
+      <button class="primary-button" id="addPartButton" type="button"><i class="fa-solid fa-plus"></i> Add Part</button>
+    </div>
+
+    <section class="summary-grid" aria-label="Inventory summary">
+      <article class="summary-card"><span class="summary-icon blue"><i class="fa-solid fa-boxes-stacked"></i></span><div><strong id="totalParts">0</strong><span>Total Parts</span></div></article>
+      <article class="summary-card"><span class="summary-icon green"><i class="fa-solid fa-circle-check"></i></span><div><strong id="inStockCount">0</strong><span>In Stock</span></div></article>
+      <article class="summary-card"><span class="summary-icon amber"><i class="fa-solid fa-triangle-exclamation"></i></span><div><strong id="lowStockCount">0</strong><span>Low Stock</span></div></article>
+      <article class="summary-card"><span class="summary-icon purple"><i class="fa-solid fa-indian-rupee-sign"></i></span><div><strong id="inventoryValue">₹0</strong><span>Inventory Value</span></div></article>
+    </section>
+
+    <section class="inventory-card">
+      <div class="toolbar">
+        <div class="select-field"><i class="fa-solid fa-layer-group"></i><select id="categoryFilter" aria-label="Filter by category"><option value="">All Categories</option></select><i class="fa-solid fa-chevron-down select-arrow"></i></div>
+        <div class="select-field"><i class="fa-solid fa-circle-half-stroke"></i><select id="statusFilter" aria-label="Filter by status"><option value="">All Status</option><option>In Stock</option><option>Low Stock</option><option>Out of Stock</option></select><i class="fa-solid fa-chevron-down select-arrow"></i></div>
+        <label class="search-field"><i class="fa-solid fa-magnifying-glass"></i><input id="searchInput" type="search" placeholder="Search by part name or code..." aria-label="Search inventory"></label>
+        <button class="filter-button" id="filterButton" type="button"><i class="fa-solid fa-filter"></i><span>Filter</span></button>
+      </div>
+      <div class="filter-note" id="filterNote" hidden>Filters are active. Clear search or select All to see every part.</div>
+
+      <div class="table-scroll">
+        <table id="inventoryTable">
+          <thead><tr><th>#</th><th>Image</th><th>Part Name</th><th>Part Code</th><th>Category</th><th>Compatible With</th><th>Qty</th><th>Price (₹)</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="inventoryBody"></tbody>
+        </table>
+        <div class="empty-state" id="emptyState" hidden><i class="fa-regular fa-folder-open"></i><strong>No parts found</strong><span>Try changing your search or filters.</span></div>
+      </div>
+      <footer class="table-footer">
+        <span id="showingText">Showing 0 entries</span>
+        <div class="pagination" id="pagination"></div>
+        <label class="page-size">Rows per page: <select id="pageSize"><option>5</option><option selected>10</option><option>25</option></select></label>
+      </footer>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="partModal" hidden>
+    <section class="edit-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-heading"><div><span class="eyebrow">PART DETAILS</span><h2 id="modalTitle">Add Inventory Part</h2></div><button class="close-button" id="closeModal" type="button" aria-label="Close"><i class="fa-solid fa-xmark"></i></button></div>
+      <form id="partForm">
+        <input type="hidden" id="partId">
+        <div class="form-grid">
+          <label>Part Name<input id="partName" name="partName" required></label>
+          <label>Part Code<input id="partCode" name="partCode" required></label>
+          <label>Category<input id="category" name="category" required></label>
+          <label>Compatible With<input id="compatibleWith" name="compatibleWith" required></label>
+          <label>Quantity<input id="quantity" name="quantity" type="number" min="0" required></label>
+          <label>Minimum Stock<input id="minStock" name="minStock" type="number" min="0" required></label>
+          <label>Price (₹)<input id="price" name="price" type="number" min="0" step="0.01" required></label>
+          <label>Status<select id="status" name="status"><option>In Stock</option><option>Low Stock</option><option>Out of Stock</option></select></label>
+          <label class="full-field">Image File Name / Path<input id="image" name="image" type="text" placeholder="e.g. BrakePad.png or Images/BrakePad.png"><small>Enter the local file name with extension. If the image is inside a folder, include that folder path.</small></label>
+        </div>
+        <div class="image-preview-wrap"><span>Image preview</span><div class="image-preview" id="imagePreview"><i class="fa-regular fa-image"></i><small>No image link added</small></div></div>
+        <div class="modal-actions"><button class="secondary-button" id="cancelModal" type="button">Cancel</button><button class="primary-button" type="submit"><i class="fa-solid fa-check"></i> Save Part</button></div>
+      </form>
+    </section>
+  </div>
+  <div class="modal-backdrop image-modal-backdrop" id="imageModal" hidden>
+    <section class="image-modal" role="dialog" aria-modal="true" aria-labelledby="imageModalTitle">
+      <div class="modal-heading"><div><span class="eyebrow">PART IMAGE</span><h2 id="imageModalTitle">Image Preview</h2></div><button class="close-button" id="closeImageModal" type="button" aria-label="Close image preview"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="image-modal-content"><img id="largeImagePreview" alt=""></div>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="../js/app.js"></script>
+  <script src="../js/inventory.js"></script>
+</body>
+</html>
